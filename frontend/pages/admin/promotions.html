@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pricing - CinemaBook Admin</title>
+    <title>Promotions - CinemaBook Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
@@ -56,8 +56,11 @@
                 class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
                     class="fas fa-users w-5"></i> Users</a>
             <a href="pricing.html"
-                class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl transition text-sm bg-red-900/20 text-red-500"><i
+                class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
                     class="fas fa-tags w-5"></i> Pricing</a>
+            <a href="promotions.html"
+                class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl transition text-sm bg-red-900/20 text-red-500"><i
+                    class="fas fa-gift w-5"></i> Promotions</a>
             <a href="reports.html"
                 class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
                     class="fas fa-chart-bar w-5"></i> Reports</a>
@@ -70,12 +73,12 @@
     <main class="ml-64 flex-1 p-8">
         <div class="flex items-center justify-between mb-8">
             <div>
-                <h1 class="text-3xl font-black">Pricing Management</h1>
-                <p class="text-gray-500 mt-1">Manage ticket prices and internet fees for different types.</p>
+                <h1 class="text-3xl font-black">Promotion Management</h1>
+                <p class="text-gray-500 mt-1">Manage promotion codes and discounts.</p>
             </div>
-            <button id="addPricingBtn" onclick="openModal()"
+            <button id="addPromoBtn" onclick="openModal()"
                 class="hidden bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition"><i
-                    class="fas fa-plus"></i> Add Pricing</button>
+                    class="fas fa-plus"></i> Add Promotion</button>
         </div>
 
         <div class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
@@ -84,15 +87,16 @@
                     <thead class="bg-gray-800 text-gray-400">
                         <tr>
                             <th class="px-6 py-4 text-left">ID</th>
-                            <th class="px-6 py-4 text-left">Type/Name</th>
-                            <th class="px-6 py-4 text-left">Base Price (LKR)</th>
-                            <th class="px-6 py-4 text-left">Internet Fee (LKR)</th>
+                            <th class="px-6 py-4 text-left">Code</th>
+                            <th class="px-6 py-4 text-left">Discount %</th>
+                            <th class="px-6 py-4 text-left">Valid Until</th>
+                            <th class="px-6 py-4 text-left">Status</th>
                             <th id="actionsHeader" class="hidden px-6 py-4 text-left">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
                         <tr>
-                            <td colspan="5" class="text-center py-8 text-gray-600">Loading...</td>
+                            <td colspan="6" class="text-center py-8 text-gray-600">Loading...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -104,28 +108,33 @@
     <div id="theModal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
         <div class="bg-gray-900 border border-gray-700 rounded-2xl p-8 w-full max-w-md">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold" id="modalTitle">Add Pricing rules</h3>
+                <h3 class="text-xl font-bold" id="modalTitle">Add Promotion</h3>
                 <button onclick="closeModal()" class="text-gray-500 hover:text-white text-xl"><i
                         class="fas fa-times"></i></button>
             </div>
             <div class="space-y-4">
                 <div>
-                    <label class="text-sm text-gray-400 block mb-1">Pricing Name (e.g. ODC, BOX) *</label>
-                    <input id="fName"
+                    <label class="text-sm text-gray-400 block mb-1">Promotion Code *</label>
+                    <input id="fCode"
                         class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500"
-                        placeholder="ODC">
+                        placeholder="e.g. SUMMER25">
                 </div>
                 <div>
-                    <label class="text-sm text-gray-400 block mb-1">Base Price (LKR) *</label>
-                    <input id="fBasePrice" type="number"
+                    <label class="text-sm text-gray-400 block mb-1">Discount Percentage *</label>
+                    <input id="fDiscountList" type="number" step="0.1"
                         class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500"
-                        placeholder="500">
+                        placeholder="10.0">
                 </div>
                 <div>
-                    <label class="text-sm text-gray-400 block mb-1">Internet Fee (LKR)</label>
-                    <input id="fInternetFee" type="number"
-                        class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500"
-                        value="0">
+                    <label class="text-sm text-gray-400 block mb-1">Valid Until *</label>
+                    <input id="fValidUntil" type="date"
+                        class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500">
+                </div>
+                <div class="flex items-center gap-2">
+                    <input id="fActive" type="checkbox"
+                        class="w-4 h-4 bg-gray-800 border border-gray-700 text-red-600 rounded focus:ring-red-500"
+                        checked>
+                    <label class="text-sm text-gray-400 block">Is Active</label>
                 </div>
             </div>
             <div class="flex gap-3 mt-6">
@@ -148,7 +157,8 @@
 
         async function loadItems() {
             try {
-                const data = await PricingAPI.getAll();
+                // we'll add PromotionAPI in api.js next
+                const data = await PromotionAPI.getAll();
                 allItems = data || [];
                 renderTable(allItems);
             } catch (e) {
@@ -160,7 +170,7 @@
             const currentAdmin = Session.getAdmin();
             const isAdmin = currentAdmin && (currentAdmin.role === 'SUPER_ADMIN' || currentAdmin.role === 'ADMIN');
 
-            const addBtn = document.getElementById('addPricingBtn');
+            const addBtn = document.getElementById('addPromoBtn');
             const actionsHeader = document.getElementById('actionsHeader');
             if (isAdmin) {
                 addBtn.classList.remove('hidden');
@@ -168,22 +178,27 @@
             }
 
             const tbody = document.getElementById('tableBody');
-            const colspan = isAdmin ? 5 : 4;
+            const colspan = isAdmin ? 6 : 5;
             if (!items.length) {
-                tbody.innerHTML = `<tr><td colspan="${colspan}" class="text-center py-8 text-gray-600">No pricing rules found. Check Pricing Service on port 8091.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="${colspan}" class="text-center py-8 text-gray-600">No promotions found.</td></tr>`;
                 return;
             }
             tbody.innerHTML = items.map(p => `
                 <tr class="border-b border-gray-800 hover:bg-gray-800 transition">
                     <td class="px-6 py-4 text-gray-500">${p.id}</td>
-                    <td class="px-6 py-4 font-bold text-gray-200">${p.name}</td>
-                    <td class="px-6 py-4 text-green-400">Rs. ${p.basePrice.toFixed(2)}</td>
-                    <td class="px-6 py-4 text-blue-400">Rs. ${p.internetFee.toFixed(2)}</td>
+                    <td class="px-6 py-4 font-bold text-gray-200">${p.code}</td>
+                    <td class="px-6 py-4 text-green-400">${p.discountPercentage}%</td>
+                    <td class="px-6 py-4 text-gray-300">${p.validUntil}</td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-1 text-xs rounded-full font-bold ${p.active ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}">
+                            ${p.active ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
                     ${isAdmin ? `
                     <td class="px-6 py-4">
                         <div class="flex gap-2">
                             <button onclick="editItem(${p.id})" class="text-blue-400 hover:text-blue-300 p-2 hover:bg-blue-950 rounded-lg transition"><i class="fas fa-edit"></i></button>
-                            <button onclick="deleteItem(${p.id}, '${p.name}')" class="text-red-400 hover:text-red-300 p-2 hover:bg-red-950 rounded-lg transition"><i class="fas fa-trash"></i></button>
+                            <button onclick="deleteItem(${p.id}, '${p.code}')" class="text-red-400 hover:text-red-300 p-2 hover:bg-red-950 rounded-lg transition"><i class="fas fa-trash"></i></button>
                         </div>
                     </td>` : ''}
                 </tr>
@@ -193,10 +208,11 @@
         function openModal(item = null) {
             document.getElementById('theModal').classList.remove('hidden');
             editingId = item ? item.id : null;
-            document.getElementById('modalTitle').textContent = item ? 'Edit Pricing' : 'Add Pricing';
-            document.getElementById('fName').value = item?.name || '';
-            document.getElementById('fBasePrice').value = item?.basePrice || '';
-            document.getElementById('fInternetFee').value = item?.internetFee || '0';
+            document.getElementById('modalTitle').textContent = item ? 'Edit Promotion' : 'Add Promotion';
+            document.getElementById('fCode').value = item?.code || '';
+            document.getElementById('fDiscountList').value = item?.discountPercentage || '';
+            document.getElementById('fValidUntil').value = item?.validUntil || '';
+            document.getElementById('fActive').checked = item ? item.active : true;
         }
 
         function closeModal() {
@@ -210,18 +226,22 @@
                 alert("Permission denied"); return;
             }
             const data = {
-                name: document.getElementById('fName').value.trim(),
-                basePrice: parseFloat(document.getElementById('fBasePrice').value) || 0,
-                internetFee: parseFloat(document.getElementById('fInternetFee').value) || 0
+                code: document.getElementById('fCode').value.trim(),
+                discountPercentage: parseFloat(document.getElementById('fDiscountList').value) || 0,
+                validUntil: document.getElementById('fValidUntil').value,
+                active: document.getElementById('fActive').checked
             };
-            if (!data.name || isNaN(data.basePrice)) { alert('Name and Price are required'); return; }
+            if (!data.code || isNaN(data.discountPercentage) || !data.validUntil) {
+                alert('Code, Discount, and Date are required');
+                return;
+            }
 
-            const result = editingId ? await PricingAPI.update(editingId, data) : await PricingAPI.create(data);
+            const result = editingId ? await PromotionAPI.update(editingId, data) : await PromotionAPI.create(data);
             if (result) {
                 closeModal();
                 loadItems();
             } else {
-                alert('Failed. Pricing Service backend might not be responding.');
+                alert('Failed to save promotion.');
             }
         }
 
@@ -230,11 +250,11 @@
             if (item) openModal(item);
         }
 
-        async function deleteItem(id, name) {
+        async function deleteItem(id, code) {
             const currentAdmin = Session.getAdmin();
             if (!currentAdmin || (currentAdmin.role !== 'SUPER_ADMIN' && currentAdmin.role !== 'ADMIN')) return;
-            if (!confirm("Delete pricing '" + name + "'?")) return;
-            await PricingAPI.delete(id);
+            if (!confirm("Delete promotion '" + code + "'?")) return;
+            await PromotionAPI.delete(id);
             loadItems();
         }
 
