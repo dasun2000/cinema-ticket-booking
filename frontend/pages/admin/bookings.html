@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookings - CinemaBook Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            background: #0d0d0d;
+        }
+
+        .sidebar-link.active,
+        .sidebar-link:hover {
+            background: rgba(229, 9, 20, 0.15);
+            color: #ef4444;
+        }
+    </style>
+</head>
+
+<body class="text-white min-h-screen flex">
+    <aside class="w-64 bg-gray-950 border-r border-gray-800 flex flex-col fixed h-full z-20">
+        <div class="p-5 border-b border-gray-800">
+            <div class="flex items-center gap-3"><i class="fas fa-film text-red-600 text-2xl"></i>
+                <div>
+                    <div class="font-black text-lg text-red-500">CinemaBook</div>
+                    <div class="text-xs text-gray-500">Admin Panel</div>
+                </div>
+            </div>
+        </div>
+        <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+            <a href="dashboard.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-tachometer-alt w-5"></i> Dashboard</a>
+            <a href="movies.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-film w-5"></i> Movies</a>
+            <a href="theaters.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-building w-5"></i> Theaters</a>
+            <a href="showtimes.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-clock w-5"></i> Showtimes</a>
+            <a href="bookings.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl transition text-sm bg-red-900/20 text-red-500"><i class="fas fa-ticket-alt w-5"></i> Bookings</a>
+            <a href="seats.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-chair w-5"></i> Seats</a>
+            <a href="tickets.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-receipt w-5"></i> Tickets</a>
+            <a href="users.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-users w-5"></i> Users</a>
+            <a href="pricing.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-tags w-5"></i> Pricing</a>
+            <a href="reports.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-chart-bar w-5"></i> Reports</a>
+        </nav>
+        <div class="p-4 border-t border-gray-800"><button onclick="doLogout()"
+                class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-red-400 hover:bg-red-950 transition text-sm"><i
+                    class="fas fa-sign-out-alt w-5"></i> Logout</button></div>
+    </aside>
+    <main class="ml-64 flex-1 p-8">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-black">Bookings</h1>
+                <p class="text-gray-500 mt-1">Manage bookings in the system</p>
+            </div>
+            <button onclick="openModal()"
+                class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition"><i
+                    class="fas fa-plus"></i> Add Booking</button>
+        </div>
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-800 text-gray-400">
+                        <tr>
+                            <th class="px-6 py-4 text-left">Reference</th>
+                            <th class="px-6 py-4 text-left">Customer</th>
+                            <th class="px-6 py-4 text-left">Email</th>
+                            <th class="px-6 py-4 text-left">Showtime</th>
+                            <th class="px-6 py-4 text-left">Seats</th>
+                            <th class="px-6 py-4 text-left">Amount</th>
+                            <th class="px-6 py-4 text-left">Status</th>
+                            <th class="px-6 py-4 text-left">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr>
+                            <td colspan="8" class="text-center py-8 text-gray-600">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <!-- Modal -->
+    <div id="theModal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
+        <div class="bg-gray-900 border border-gray-700 rounded-2xl p-8 w-full max-w-xl max-h-screen overflow-y-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold" id="modalTitle">Add Booking</h3><button onclick="closeModal()"
+                    class="text-gray-500 hover:text-white text-xl"><i class="fas fa-times"></i></button>
+            </div>
+
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="text-sm text-gray-400 block mb-1">Customer Name</label><input id="fCustName"
+                            class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500">
+                    </div>
+                    <div><label class="text-sm text-gray-400 block mb-1">Customer Email</label><input id="fCustEmail"
+                            type="email"
+                            class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500">
+                    </div>
+                    <div><label class="text-sm text-gray-400 block mb-1">Customer Phone</label><input id="fCustPhone"
+                            class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500">
+                    </div>
+                    <div><label class="text-sm text-gray-400 block mb-1">Showtime ID</label><input id="fShowtimeId"
+                            type="number"
+                            class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500">
+                    </div>
+                    <div><label class="text-sm text-gray-400 block mb-1">Number of Seats</label><input id="fSeats"
+                            type="number"
+                            class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500"
+                            placeholder="1"></div>
+                    <div><label class="text-sm text-gray-400 block mb-1">Total Amount (Rs.)</label><input id="fAmount"
+                            type="number"
+                            class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500"
+                            placeholder="1500"></div>
+                    <div><label class="text-sm text-gray-400 block mb-1">Status</label>
+                        <select id="fStatus"
+                            class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500">
+                            <option value="CONFIRMED">Confirmed</option>
+                            <option value="PENDING">Pending</option>
+                            <option value="CANCELLED">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="saveItem()"
+                    class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-bold transition"><i
+                        class="fas fa-save mr-2"></i> Save</button>
+                <button onclick="closeModal()"
+                    class="px-6 py-3 rounded-xl bg-gray-800 text-gray-300 hover:bg-gray-700 transition">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script src="../../js/api.js"></script>
+    <script>
+        if (!Session.isAdminLoggedIn()) window.location.href = 'login.html';
+        function doLogout() { if (confirm('Logout?')) { Session.clearAdmin(); window.location.href = 'login.html'; } }
+        function openModal(item = null) { document.getElementById('theModal').classList.remove('hidden'); populateForm(item); }
+        function closeModal() { document.getElementById('theModal').classList.add('hidden'); editingId = null; }
+
+        let allItems = [];
+        let editingId = null;
+
+        async function loadItems() {
+            const data = await BookingAPI.getAll();
+            allItems = data || [];
+            renderTable(allItems);
+        }
+
+        function renderTable(items) {
+            const tbody = document.getElementById('tableBody');
+            if (!items.length) { tbody.innerHTML = '<tr><td colspan="8" class="text-center py-8 text-gray-600">No bookings found.</td></tr>'; return; }
+            tbody.innerHTML = items.map(b => `
+    <tr class="border-b border-gray-800 hover:bg-gray-800 transition">
+        <td class="px-6 py-4 text-blue-400 font-mono text-xs">${b.bookingReference || '#' + b.id}</td>
+        <td class="px-6 py-4 font-medium">${b.customerName || '-'}</td>
+        <td class="px-6 py-4 text-gray-400">${b.customerEmail || '-'}</td>
+        <td class="px-6 py-4 text-gray-400">${b.showtimeId || '-'}</td>
+        <td class="px-6 py-4">${b.numberOfSeats || '-'}</td>
+        <td class="px-6 py-4 text-green-400 font-bold">Rs. ${b.totalAmount || '0'}</td>
+        <td class="px-6 py-4"><span class="px-2 py-1 rounded-full text-xs font-bold ${b.status === 'CONFIRMED' ? 'bg-green-900 text-green-400' : b.status === 'CANCELLED' ? 'bg-red-900 text-red-400' : 'bg-yellow-900 text-yellow-400'}">${b.status}</span></td>
+        <td class="px-6 py-4"><div class="flex gap-2">
+            <button onclick="editItem(${b.id})" class="text-blue-400 hover:text-blue-300 p-2 hover:bg-blue-950 rounded-lg transition"><i class="fas fa-edit"></i></button>
+            <button onclick="deleteItem(${b.id})" class="text-red-400 hover:text-red-300 p-2 hover:bg-red-950 rounded-lg transition"><i class="fas fa-trash"></i></button>
+        </div></td>
+    </tr>`).join('');
+        }
+
+        function populateForm(item) {
+            editingId = item ? item.id : null;
+            document.getElementById('modalTitle').textContent = item ? 'Edit Booking' : 'Add Booking';
+            document.getElementById('fCustName').value = item?.customerName || '';
+            document.getElementById('fCustEmail').value = item?.customerEmail || '';
+            document.getElementById('fCustPhone').value = item?.customerPhone || '';
+            document.getElementById('fShowtimeId').value = item?.showtimeId || '';
+            document.getElementById('fSeats').value = item?.numberOfSeats || 1;
+            document.getElementById('fAmount').value = item?.totalAmount || '';
+            document.getElementById('fStatus').value = item?.status || 'CONFIRMED';
+        }
+
+        async function saveItem() {
+            const data = {
+                customerName: document.getElementById('fCustName').value,
+                customerEmail: document.getElementById('fCustEmail').value,
+                customerPhone: document.getElementById('fCustPhone').value,
+                showtimeId: parseInt(document.getElementById('fShowtimeId').value) || null,
+                numberOfSeats: parseInt(document.getElementById('fSeats').value) || 1,
+                totalAmount: parseFloat(document.getElementById('fAmount').value) || 0,
+                status: document.getElementById('fStatus').value,
+            };
+            const result = editingId ? await BookingAPI.update(editingId, data) : await BookingAPI.create(data);
+            if (result) { closeModal(); loadItems(); }
+            else alert('Failed to save. Make sure Booking Service is running on port 8085.');
+        }
+
+        function editItem(id) { const item = allItems.find(b => b.id === id); if (item) openModal(item); }
+        async function deleteItem(id) { if (!confirm('Delete booking?')) return; await BookingAPI.delete(id); loadItems(); }
+        loadItems();
+    </script>
+</body>
+
+</html>

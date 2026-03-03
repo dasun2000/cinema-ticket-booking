@@ -1,0 +1,56 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-origins: "*"
+            allowed-methods: "*"
+            allowed-headers: "*"
+      routes:
+        - id: user-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/users/**
+        - id: movie-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/movies/**
+        - id: theater-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/theaters/**
+        - id: showtime-service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/showtimes/**
+        - id: booking-service
+          uri: http://localhost:8085
+          predicates:
+            - Path=/api/bookings/**
+        - id: seat-service
+          uri: http://localhost:8086
+          predicates:
+            - Path=/api/seats/**
+
+        - id: admin-service
+          uri: http://localhost:8089
+          predicates:
+            - Path=/api/admin/**
+        - id: report-service
+          uri: http://localhost:8090
+          predicates:
+            - Path=/api/reports/**
+        - id: pricing-service
+          uri: http://localhost:8091
+          predicates:
+            - Path=/api/pricing/**
+        - id: ticket-service
+          uri: http://localhost:8092
+          predicates:
+            - Path=/api/tickets/**
+
+server:
+  port: 8080

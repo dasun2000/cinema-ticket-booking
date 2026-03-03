@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theaters - CinemaBook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script>
+        tailwind.config = { theme: { extend: { colors: { primary: '#e50914' } } } }
+    </script>
+    <style>
+        body {
+            background-color: #0a0a0a;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #e50914, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+
+<body class="text-white min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="bg-black bg-opacity-95 fixed w-full z-50 top-0 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-film text-red-600 text-2xl"></i>
+                <a href="../index.html" class="text-2xl font-bold gradient-text">CinemaBook</a>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="../index.html" class="text-gray-300 hover:text-white transition">Home</a>
+                <a href="movies.html" class="text-gray-300 hover:text-white transition">Movies</a>
+                <a href="theaters.html" class="text-red-500 font-medium">Theaters</a>
+                <a href="booking.html" class="text-gray-300 hover:text-white transition">My Bookings</a>
+            </div>
+            <a href="login.html"
+                class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition">Login</a>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="pt-20 pb-6 px-4 bg-gradient-to-b from-gray-900 to-transparent">
+        <div class="max-w-7xl mx-auto pt-8">
+            <h1 class="text-4xl font-black mb-2">Our Theaters</h1>
+            <p class="text-gray-400">Find cinemas near you across Sri Lanka</p>
+        </div>
+    </div>
+
+    <!-- City Filter -->
+    <div class="max-w-7xl mx-auto px-4 mb-8">
+        <div class="flex flex-wrap gap-3">
+            <button onclick="filterCity('')"
+                class="city-btn active-city px-4 py-2 rounded-full text-sm font-medium bg-red-600 text-white">All
+                Cities</button>
+            <button onclick="filterCity('Colombo')"
+                class="city-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-800 text-gray-300 hover:bg-gray-700">Colombo</button>
+            <button onclick="filterCity('Kandy')"
+                class="city-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-800 text-gray-300 hover:bg-gray-700">Kandy</button>
+            <button onclick="filterCity('Galle')"
+                class="city-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-800 text-gray-300 hover:bg-gray-700">Galle</button>
+            <button onclick="filterCity('Negombo')"
+                class="city-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-800 text-gray-300 hover:bg-gray-700">Negombo</button>
+            <button onclick="filterCity('Matara')"
+                class="city-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-800 text-gray-300 hover:bg-gray-700">Matara</button>
+        </div>
+    </div>
+
+    <!-- Theaters -->
+    <div class="max-w-7xl mx-auto px-4 pb-16">
+        <div id="loadingState" class="text-center py-20 text-gray-500">
+            <i class="fas fa-spinner fa-spin text-3xl mb-4 text-red-600"></i>
+            <p>Loading theaters...</p>
+        </div>
+        <div id="emptyState" class="hidden text-center py-20 text-gray-500">
+            <i class="fas fa-building text-5xl mb-4 opacity-20"></i>
+            <p class="text-lg">No theaters found</p>
+            <p class="text-sm mt-1">Make sure the backend services are running</p>
+        </div>
+        <div id="theatersGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script>
+        let allTheaters = [];
+        let currentCity = '';
+
+        async function loadTheaters() {
+            const theaters = await TheaterAPI.getAll();
+            allTheaters = theaters || [];
+            document.getElementById('loadingState').classList.add('hidden');
+            renderTheaters(allTheaters);
+        }
+
+        function renderTheaters(theaters) {
+            const grid = document.getElementById('theatersGrid');
+            if (!theaters.length) {
+                grid.classList.add('hidden');
+                document.getElementById('emptyState').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('emptyState').classList.add('hidden');
+            grid.classList.remove('hidden');
+            grid.innerHTML = theaters.map(t => `
+                <div class="bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 hover:border-red-800 transition">
+                    <div class="h-40 bg-gradient-to-br from-gray-800 to-gray-700 flex items-center justify-center">
+                        <i class="fas fa-building text-5xl text-gray-600"></i>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-start justify-between mb-3">
+                            <h3 class="text-xl font-bold">${t.name}</h3>
+                            <span class="px-2 py-1 rounded-full text-xs font-bold ${t.status === 'ACTIVE' ? 'bg-green-900 text-green-400' : 'bg-gray-700 text-gray-400'}">${t.status || 'ACTIVE'}</span>
+                        </div>
+                        <div class="space-y-2 text-sm text-gray-400">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-map-marker-alt text-red-500 w-4"></i>
+                                <span>${t.address || 'Address not set'}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-city text-blue-500 w-4"></i>
+                                <span>${t.city || 'N/A'}</span>
+                            </div>
+                            ${t.totalScreens ? `<div class="flex items-center gap-2"><i class="fas fa-film text-purple-500 w-4"></i><span>${t.totalScreens} screens</span></div>` : ''}
+                            ${t.totalCapacity ? `<div class="flex items-center gap-2"><i class="fas fa-users text-yellow-500 w-4"></i><span>${t.totalCapacity} total seats</span></div>` : ''}
+                            ${t.phone ? `<div class="flex items-center gap-2"><i class="fas fa-phone text-green-500 w-4"></i><span>${t.phone}</span></div>` : ''}
+                        </div>
+                        <a href="movies.html" class="block mt-4 bg-red-600 hover:bg-red-700 text-white text-center font-bold py-2.5 rounded-xl text-sm transition">
+                            <i class="fas fa-ticket-alt mr-2"></i> Book Tickets
+                        </a>
+                    </div>
+                </div>`).join('');
+        }
+
+        function filterCity(city) {
+            currentCity = city;
+            document.querySelectorAll('.city-btn').forEach(b => {
+                b.classList.remove('bg-red-600', 'text-white');
+                b.classList.add('bg-gray-800', 'text-gray-300');
+            });
+            event.target.classList.remove('bg-gray-800', 'text-gray-300');
+            event.target.classList.add('bg-red-600', 'text-white');
+            const filtered = city ? allTheaters.filter(t => t.city === city) : allTheaters;
+            renderTheaters(filtered);
+        }
+
+        loadTheaters();
+    </script>
+</body>
+
+</html>

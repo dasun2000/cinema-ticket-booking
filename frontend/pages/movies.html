@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies - CinemaBook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script>
+        tailwind.config = { theme: { extend: { colors: { primary: '#e50914', dark: '#141414' } } } }
+    </script>
+    <style>
+        body {
+            background-color: #0a0a0a;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #e50914, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-6px);
+            transition: transform 0.3s ease;
+        }
+
+        .movie-card {
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+
+<body class="text-white min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="bg-black bg-opacity-95 fixed w-full z-50 top-0 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-film text-red-600 text-2xl"></i>
+                <a href="../index.html" class="text-2xl font-bold gradient-text">CinemaBook</a>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="../index.html" class="text-gray-300 hover:text-white transition">Home</a>
+                <a href="movies.html" class="text-red-500 font-medium">Movies</a>
+                <a href="theaters.html" class="text-gray-300 hover:text-white transition">Theaters</a>
+                <a href="booking.html" class="text-gray-300 hover:text-white transition">My Bookings</a>
+            </div>
+            <a href="login.html"
+                class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition">Login</a>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="pt-20 pb-6 px-4 bg-gradient-to-b from-gray-900 to-transparent">
+        <div class="max-w-7xl mx-auto pt-8">
+            <h1 class="text-4xl font-black mb-2">Now Showing</h1>
+            <p class="text-gray-400">Book your favorite movies across all theaters</p>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="max-w-7xl mx-auto px-4 mb-8">
+        <div class="flex flex-wrap gap-3 items-center">
+            <div class="relative flex-1 min-w-48">
+                <i class="fas fa-search absolute left-3 top-3 text-gray-500 text-sm"></i>
+                <input id="searchInput" type="text" placeholder="Search movies..."
+                    class="w-full bg-gray-800 text-white pl-9 pr-4 py-2.5 rounded-xl border border-gray-700 focus:outline-none focus:border-red-500 text-sm">
+            </div>
+            <select id="genreFilter"
+                class="bg-gray-800 text-white px-4 py-2.5 rounded-xl border border-gray-700 focus:outline-none focus:border-red-500 text-sm">
+                <option value="">All Genres</option>
+                <option value="Action">Action</option>
+                <option value="Comedy">Comedy</option>
+                <option value="Drama">Drama</option>
+                <option value="Horror">Horror</option>
+                <option value="Romance">Romance</option>
+                <option value="Sci-Fi">Sci-Fi</option>
+                <option value="Thriller">Thriller</option>
+                <option value="Animation">Animation</option>
+            </select>
+            <select id="statusFilter"
+                class="bg-gray-800 text-white px-4 py-2.5 rounded-xl border border-gray-700 focus:outline-none focus:border-red-500 text-sm">
+                <option value="">All Status</option>
+                <option value="NOW_SHOWING">Now Showing</option>
+                <option value="COMING_SOON">Coming Soon</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Movies Grid -->
+    <div class="max-w-7xl mx-auto px-4 pb-16">
+        <div id="loadingState" class="text-center py-20 text-gray-500">
+            <i class="fas fa-spinner fa-spin text-3xl mb-4 text-red-600"></i>
+            <p>Loading movies...</p>
+        </div>
+        <div id="emptyState" class="hidden text-center py-20 text-gray-500">
+            <i class="fas fa-film text-5xl mb-4 opacity-20"></i>
+            <p class="text-lg">No movies found</p>
+            <p class="text-sm mt-1">Make sure the backend services are running</p>
+        </div>
+        <div id="moviesGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 hidden"></div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal"
+        class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-gray-900 rounded-2xl max-w-lg w-full max-h-screen overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 class="text-2xl font-bold" id="modalMovieTitle">Book Tickets</h2>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-white"><i
+                            class="fas fa-times text-xl"></i></button>
+                </div>
+
+                <!-- Movie Info -->
+                <div id="modalMovieInfo" class="flex gap-4 mb-6 p-4 bg-gray-800 rounded-xl"></div>
+
+                <!-- Showtimes -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Select Date</label>
+                    <input type="date" id="showDate"
+                        class="w-full bg-gray-800 text-white px-4 py-2.5 rounded-xl border border-gray-700 focus:outline-none focus:border-red-500 mb-3">
+                    <div id="showtimesList" class="space-y-2"></div>
+                </div>
+
+                <!-- Booking Form -->
+                <div id="bookingForm" class="hidden">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Your Name <span
+                                    class="text-red-500">*</span></label>
+                            <input id="customerName" type="text" placeholder="Enter your full name"
+                                class="w-full bg-gray-800 text-white px-4 py-2.5 rounded-xl border border-gray-700 focus:outline-none focus:border-red-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Email <span
+                                    class="text-red-500">*</span></label>
+                            <input id="customerEmail" type="email" placeholder="Enter your email"
+                                class="w-full bg-gray-800 text-white px-4 py-2.5 rounded-xl border border-gray-700 focus:outline-none focus:border-red-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Number of Seats</label>
+                            <select id="numSeats"
+                                class="w-full bg-gray-800 text-white px-4 py-2.5 rounded-xl border border-gray-700 focus:outline-none focus:border-red-500">
+                                <option value="1">1 Seat</option>
+                                <option value="2">2 Seats</option>
+                                <option value="3">3 Seats</option>
+                                <option value="4">4 Seats</option>
+                                <option value="5">5 Seats</option>
+                            </select>
+                        </div>
+                        <div id="pricePreview" class="bg-gray-800 rounded-xl p-4">
+                            <div class="flex justify-between text-sm text-gray-400">
+                                <span>Price per seat</span>
+                                <span id="pricePerSeat">Rs. 0</span>
+                            </div>
+                            <div class="flex justify-between font-bold text-lg mt-2 text-white">
+                                <span>Total</span>
+                                <span id="totalPrice" class="text-green-400">Rs. 0</span>
+                            </div>
+                        </div>
+                        <button onclick="submitBooking()"
+                            class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition">
+                            <i class="fas fa-ticket-alt mr-2"></i> Confirm Booking
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div id="successToast"
+        class="fixed bottom-6 right-6 bg-green-800 text-white px-6 py-4 rounded-2xl shadow-2xl hidden z-50 max-w-sm">
+        <div class="flex items-center gap-3">
+            <i class="fas fa-check-circle text-green-400 text-xl"></i>
+            <div>
+                <div class="font-bold">Booking Confirmed!</div>
+                <div id="bookingRefDisplay" class="text-sm text-green-300 mt-1"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script>
+        let allMovies = [];
+        let selectedShowtime = null;
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('showDate').value = today;
+        document.getElementById('showDate').min = today;
+
+        async function loadMovies() {
+            const movies = await MovieAPI.getAll();
+            allMovies = movies || [];
+            document.getElementById('loadingState').classList.add('hidden');
+            if (!allMovies.length) { document.getElementById('emptyState').classList.remove('hidden'); return; }
+            document.getElementById('moviesGrid').classList.remove('hidden');
+            renderMovies(allMovies);
+        }
+
+        function renderMovies(movies) {
+            const grid = document.getElementById('moviesGrid');
+            if (!movies.length) {
+                grid.innerHTML = '';
+                document.getElementById('emptyState').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('emptyState').classList.add('hidden');
+            grid.innerHTML = movies.map(m => `
+                <div class="movie-card bg-gray-900 rounded-2xl overflow-hidden cursor-pointer border border-gray-800 hover:border-red-800"
+                     onclick="openBooking(${m.id})">
+                    <div class="relative aspect-[2/3] bg-gray-800">
+                        ${m.posterUrl
+                    ? `<img src="${m.posterUrl}" alt="${m.title}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<div class=\\'w-full h-full flex items-center justify-center text-gray-600\\'><i class=\\'fas fa-film text-4xl\\'></i></div>'">`
+                    : `<div class="w-full h-full flex items-center justify-center text-gray-600"><i class="fas fa-film text-4xl"></i></div>`}
+                        <div class="absolute top-2 right-2">
+                            <span class="px-2 py-1 rounded-full text-xs font-bold ${m.status === 'NOW_SHOWING' ? 'bg-green-700 text-green-200' : 'bg-yellow-700 text-yellow-200'}">
+                                ${m.status === 'NOW_SHOWING' ? 'Now Showing' : 'Coming Soon'}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <h3 class="font-bold text-sm leading-tight line-clamp-2 mb-1">${m.title}</h3>
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <span>${m.genre || 'N/A'}</span>
+                            <span>${m.durationMinutes ? m.durationMinutes + 'min' : ''}</span>
+                        </div>
+                        ${m.rating > 0 ? `<div class="flex items-center gap-1 mt-1"><i class="fas fa-star text-yellow-500 text-xs"></i><span class="text-xs text-yellow-400">${m.rating}</span></div>` : ''}
+                        ${m.status === 'NOW_SHOWING' ? `<button class="w-full mt-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-1.5 rounded-lg transition">Book Now</button>` : `<button class="w-full mt-2 bg-gray-700 text-gray-400 text-xs font-bold py-1.5 rounded-lg cursor-default">Coming Soon</button>`}
+                    </div>
+                </div>`).join('');
+        }
+
+        function filterMovies() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            const genre = document.getElementById('genreFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            const filtered = allMovies.filter(m => {
+                const matchTitle = !q || m.title.toLowerCase().includes(q);
+                const matchGenre = !genre || m.genre === genre;
+                const matchStatus = !status || m.status === status;
+                return matchTitle && matchGenre && matchStatus;
+            });
+            renderMovies(filtered);
+        }
+
+        document.getElementById('searchInput').addEventListener('input', filterMovies);
+        document.getElementById('genreFilter').addEventListener('change', filterMovies);
+        document.getElementById('statusFilter').addEventListener('change', filterMovies);
+
+        async function openBooking(movieId) {
+            window.location.href = `movie-detail.html?id=${movieId}`;
+        }
+
+        // clean up
+
+        loadMovies();
+    </script>
+</body>
+
+</html>

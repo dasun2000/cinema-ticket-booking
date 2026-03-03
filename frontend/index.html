@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CinemaBook - Movie Ticket Booking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#e50914',
+                        dark: '#141414',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0a0a0a;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        }
+
+        .movie-card:hover .movie-overlay {
+            opacity: 1;
+        }
+
+        .movie-overlay {
+            transition: opacity 0.3s ease;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #e50914, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+
+<body class="text-white min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="bg-black bg-opacity-90 fixed w-full z-50 top-0 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-film text-red-600 text-2xl"></i>
+                <span class="text-2xl font-bold gradient-text">CinemaBook</span>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="index.html" class="text-red-500 font-medium">Home</a>
+                <a href="pages/movies.html" class="text-gray-300 hover:text-white transition">Movies</a>
+                <a href="pages/theaters.html" class="text-gray-300 hover:text-white transition">Theaters</a>
+                <a href="pages/booking.html" class="text-gray-300 hover:text-white transition">My Bookings</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div id="citySelector"
+                    class="hidden md:flex items-center space-x-2 bg-gray-800 px-3 py-2 rounded-lg cursor-pointer hover:bg-gray-700">
+                    <i class="fas fa-map-marker-alt text-red-500 text-sm"></i>
+                    <span class="text-sm text-gray-300">Colombo</span>
+                    <i class="fas fa-chevron-down text-gray-500 text-xs"></i>
+                </div>
+                <a href="pages/login.html"
+                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient pt-16 pb-12 px-4">
+        <div class="max-w-7xl mx-auto pt-12">
+            <div class="text-center mb-10">
+                <h1 class="text-5xl md:text-6xl font-black mb-4">Book Your <span class="gradient-text">Movie</span>
+                    Experience</h1>
+                <p class="text-gray-400 text-xl max-w-2xl mx-auto">Discover and book tickets for the latest movies at
+                    theaters near you</p>
+            </div>
+            <!-- Search Bar -->
+            <div class="max-w-3xl mx-auto">
+                <div class="flex bg-white rounded-xl overflow-hidden shadow-2xl">
+                    <div class="flex items-center px-4 border-r border-gray-200">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                    <input id="searchInput" type="text" placeholder="Search movies, theaters, genres..."
+                        class="flex-1 px-4 py-4 text-gray-800 text-lg outline-none" onkeyup="filterMovies()">
+                    <button onclick="filterMovies()"
+                        class="bg-red-600 hover:bg-red-700 text-white px-8 py-4 font-bold transition">
+                        Search
+                    </button>
+                </div>
+                <!-- Genre Tags -->
+                <div class="flex flex-wrap gap-3 mt-6 justify-center">
+                    <button onclick="filterByGenre('Action')"
+                        class="genre-btn bg-gray-800 hover:bg-red-600 text-gray-300 hover:text-white px-4 py-2 rounded-full text-sm font-medium transition">Action</button>
+                    <button onclick="filterByGenre('Drama')"
+                        class="genre-btn bg-gray-800 hover:bg-red-600 text-gray-300 hover:text-white px-4 py-2 rounded-full text-sm font-medium transition">Drama</button>
+                    <button onclick="filterByGenre('Comedy')"
+                        class="genre-btn bg-gray-800 hover:bg-red-600 text-gray-300 hover:text-white px-4 py-2 rounded-full text-sm font-medium transition">Comedy</button>
+                    <button onclick="filterByGenre('Horror')"
+                        class="genre-btn bg-gray-800 hover:bg-red-600 text-gray-300 hover:text-white px-4 py-2 rounded-full text-sm font-medium transition">Horror</button>
+                    <button onclick="filterByGenre('Sci-Fi')"
+                        class="genre-btn bg-gray-800 hover:bg-red-600 text-gray-300 hover:text-white px-4 py-2 rounded-full text-sm font-medium transition">Sci-Fi</button>
+                    <button onclick="filterByGenre('Romance')"
+                        class="genre-btn bg-gray-800 hover:bg-red-600 text-gray-300 hover:text-white px-4 py-2 rounded-full text-sm font-medium transition">Romance</button>
+                    <button onclick="filterByGenre('')"
+                        class="genre-btn bg-gray-800 hover:bg-red-600 text-gray-300 hover:text-white px-4 py-2 rounded-full text-sm font-medium transition">All</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Now Showing Section -->
+    <section class="max-w-7xl mx-auto px-4 py-12">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h2 class="text-3xl font-bold">Now Showing</h2>
+                <div class="w-16 h-1 bg-red-600 mt-2 rounded"></div>
+            </div>
+            <a href="pages/movies.html" class="text-red-500 hover:text-red-400 font-medium flex items-center gap-2">
+                View All <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        <div id="moviesGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <!-- Movies loaded here -->
+            <div class="text-center col-span-full py-16">
+                <div class="animate-spin text-red-600 text-4xl mb-4"><i class="fas fa-circle-notch"></i></div>
+                <p class="text-gray-500">Loading movies...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="bg-gray-900 py-14 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <div class="text-4xl font-black gradient-text" id="movieCount">50+</div>
+                    <div class="text-gray-500 mt-2">Movies</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-black gradient-text">20+</div>
+                    <div class="text-gray-500 mt-2">Theaters</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-black gradient-text">5</div>
+                    <div class="text-gray-500 mt-2">Cities</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-black gradient-text">10K+</div>
+                    <div class="text-gray-500 mt-2">Happy Customers</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Upcoming Movies -->
+    <section class="max-w-7xl mx-auto px-4 py-12">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h2 class="text-3xl font-bold">Coming Soon</h2>
+                <div class="w-16 h-1 bg-red-600 mt-2 rounded"></div>
+            </div>
+        </div>
+        <div id="upcomingGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Upcoming movies -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black border-t border-gray-800 py-12 px-4 mt-8">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center gap-2 mb-4">
+                    <i class="fas fa-film text-red-600 text-xl"></i>
+                    <span class="text-xl font-bold gradient-text">CinemaBook</span>
+                </div>
+                <p class="text-gray-500 text-sm">Your ultimate movie booking platform in Sri Lanka.</p>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4 text-gray-300">Quick Links</h4>
+                <ul class="space-y-2 text-gray-500 text-sm">
+                    <li><a href="pages/movies.html" class="hover:text-white">Movies</a></li>
+                    <li><a href="pages/theaters.html" class="hover:text-white">Theaters</a></li>
+                    <li><a href="pages/booking.html" class="hover:text-white">My Bookings</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4 text-gray-300">Cities</h4>
+                <ul class="space-y-2 text-gray-500 text-sm">
+                    <li>Colombo</li>
+                    <li>Kandy</li>
+                    <li>Galle</li>
+                    <li>Jaffna</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4 text-gray-300">Support</h4>
+                <a href="#" class="text-gray-500 hover:text-white text-sm">Help Center</a><br>
+                <a href="#" class="text-gray-500 hover:text-white text-sm">Contact Us</a>
+            </div>
+        </div>
+        <div class="text-center text-gray-600 text-sm mt-10 border-t border-gray-900 pt-6">
+            © 2025 CinemaBook. All rights reserved. | Movie Booking System - Microservices Architecture
+        </div>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

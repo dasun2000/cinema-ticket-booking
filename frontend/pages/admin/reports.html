@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - CinemaBook Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>body { background: #0d0d0d; } .sidebar-link.active, .sidebar-link:hover { background: rgba(229,9,20,0.15); color: #ef4444; }</style>
+</head>
+<body class="text-white min-h-screen flex">
+    <aside class="w-64 bg-gray-950 border-r border-gray-800 flex flex-col fixed h-full z-20">
+        <div class="p-5 border-b border-gray-800"><div class="flex items-center gap-3"><i class="fas fa-film text-red-600 text-2xl"></i><div><div class="font-black text-lg text-red-500">CinemaBook</div><div class="text-xs text-gray-500">Admin Panel</div></div></div></div>
+        <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+            <a href="dashboard.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-tachometer-alt w-5"></i> Dashboard</a>
+            <a href="movies.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-film w-5"></i> Movies</a>
+            <a href="theaters.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-building w-5"></i> Theaters</a>
+            <a href="showtimes.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-clock w-5"></i> Showtimes</a>
+            <a href="bookings.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-ticket-alt w-5"></i> Bookings</a>
+            <a href="seats.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-chair w-5"></i> Seats</a>
+            <a href="tickets.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-receipt w-5"></i> Tickets</a>
+            <a href="users.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-users w-5"></i> Users</a>
+            <a href="pricing.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-tags w-5"></i> Pricing</a>
+            <a href="reports.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl transition text-sm bg-red-900/20 text-red-500"><i class="fas fa-chart-bar w-5"></i> Reports</a>
+        </nav>
+        <div class="p-4 border-t border-gray-800"><button onclick="doLogout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-red-400 hover:bg-red-950 transition text-sm"><i class="fas fa-sign-out-alt w-5"></i> Logout</button></div>
+    </aside>
+    <main class="ml-64 flex-1 p-8">
+        <div class="flex items-center justify-between mb-8">
+            <div><h1 class="text-3xl font-black">Reports</h1><p class="text-gray-500 mt-1">System analytics and reports</p></div>
+            <button onclick="openModal()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition"><i class="fas fa-plus"></i> Generate Report</button>
+        </div>
+
+        <!-- Quick Stats -->
+        <div id="quickStats" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8"></div>
+
+        <!-- Reports Table -->
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+            <div class="p-5 border-b border-gray-800 flex items-center justify-between">
+                <h2 class="font-bold">Report History</h2>
+                <button onclick="loadItems()" class="text-sm text-red-500 hover:text-red-400">Refresh</button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-800 text-gray-400"><tr>
+                        <th class="px-6 py-4 text-left">ID</th>
+                        <th class="px-6 py-4 text-left">Type</th>
+                        <th class="px-6 py-4 text-left">Title</th>
+                        <th class="px-6 py-4 text-left">Period</th>
+                        <th class="px-6 py-4 text-left">Generated</th>
+                        <th class="px-6 py-4 text-left">Actions</th>
+                    </tr></thead>
+                    <tbody id="tableBody"><tr><td colspan="6" class="text-center py-8 text-gray-600">Loading...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="theModal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
+        <div class="bg-gray-900 border border-gray-700 rounded-2xl p-8 w-full max-w-md">
+            <div class="flex items-center justify-between mb-6"><h3 class="text-xl font-bold">Generate Report</h3><button onclick="closeModal()" class="text-gray-500 hover:text-white text-xl"><i class="fas fa-times"></i></button></div>
+            <div class="space-y-4">
+                <div><label class="text-sm text-gray-400 block mb-1">Report Type *</label>
+                    <select id="fType" class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500">
+                        <option value="SALES">SALES</option>
+                        <option value="BOOKING">BOOKING</option>
+                        <option value="MOVIE_PERFORMANCE">MOVIE_PERFORMANCE</option>
+                        <option value="USER_ACTIVITY">USER_ACTIVITY</option>
+                        <option value="REVENUE">REVENUE</option>
+                    </select>
+                </div>
+                <div><label class="text-sm text-gray-400 block mb-1">Title *</label><input id="fTitle" class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500" placeholder="Report title"></div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="text-sm text-gray-400 block mb-1">From Date</label><input id="fFromDate" type="date" class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500"></div>
+                    <div><label class="text-sm text-gray-400 block mb-1">To Date</label><input id="fToDate" type="date" class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500"></div>
+                </div>
+                <div><label class="text-sm text-gray-400 block mb-1">Notes</label><textarea id="fNotes" rows="2" class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500" placeholder="Additional notes..."></textarea></div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="saveItem()" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-bold transition"><i class="fas fa-save mr-2"></i> Generate</button>
+                <button onclick="closeModal()" class="px-6 py-3 rounded-xl bg-gray-800 text-gray-300 hover:bg-gray-700 transition">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/api.js"></script>
+    <script>
+        if (!Session.isAdminLoggedIn()) window.location.href = 'login.html';
+        function doLogout() { if(confirm('Logout?')) { Session.clearAdmin(); window.location.href='login.html'; } }
+
+        let allItems = [], editingId = null;
+
+        async function loadQuickStats() {
+            const [movies, bookings, users, theaters] = await Promise.all([MovieAPI.getAll(), BookingAPI.getAll(), UserAPI.getAll(), TheaterAPI.getAll()]);
+            const stats = [
+                { label: 'Total Movies', value: movies?.length || 0, icon: 'fa-film', color: 'text-red-400' },
+                { label: 'Total Bookings', value: bookings?.length || 0, icon: 'fa-ticket-alt', color: 'text-green-400' },
+                { label: 'Total Users', value: users?.length || 0, icon: 'fa-users', color: 'text-blue-400' },
+                { label: 'Total Theaters', value: theaters?.length || 0, icon: 'fa-building', color: 'text-yellow-400' },
+            ];
+            const revenue = bookings?.reduce((sum, b) => sum + (b.totalAmount || 0), 0) || 0;
+            document.getElementById('quickStats').innerHTML = stats.map(s => `
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <i class="fas ${s.icon} ${s.color} text-xl"></i>
+                    </div>
+                    <div class="text-2xl font-black">${s.value}</div>
+                    <div class="text-gray-500 text-sm mt-1">${s.label}</div>
+                </div>`).join('') + `
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <i class="fas fa-rupee-sign text-purple-400 text-xl"></i>
+                    </div>
+                    <div class="text-2xl font-black">Rs. ${revenue.toFixed(0)}</div>
+                    <div class="text-gray-500 text-sm mt-1">Total Revenue</div>
+                </div>`;
+        }
+
+        async function loadItems() {
+            const data = await ReportAPI.getAll();
+            allItems = data || [];
+            const tbody = document.getElementById('tableBody');
+            if (!allItems.length) { tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-600">No reports yet. Generate your first report.</td></tr>'; return; }
+            tbody.innerHTML = allItems.map(r => `
+                <tr class="border-b border-gray-800 hover:bg-gray-800 transition">
+                    <td class="px-6 py-4 text-gray-500">${r.id}</td>
+                    <td class="px-6 py-4 text-blue-400 text-xs font-bold">${r.reportType || r.type || '-'}</td>
+                    <td class="px-6 py-4 font-medium">${r.title || '-'}</td>
+                    <td class="px-6 py-4 text-gray-400 text-xs">${r.fromDate || ''} ${r.toDate ? '→ ' + r.toDate : ''}</td>
+                    <td class="px-6 py-4 text-gray-400 text-xs">${r.createdAt ? new Date(r.createdAt).toLocaleString() : '-'}</td>
+                    <td class="px-6 py-4"><div class="flex gap-2">
+                        <button onclick="deleteItem(${r.id})" class="text-red-400 hover:text-red-300 p-2 hover:bg-red-950 rounded-lg transition"><i class="fas fa-trash"></i></button>
+                    </div></td>
+                </tr>`).join('');
+        }
+
+        function openModal() { document.getElementById('theModal').classList.remove('hidden'); }
+        function closeModal() { document.getElementById('theModal').classList.add('hidden'); }
+
+        async function saveItem() {
+            const data = {
+                reportType: document.getElementById('fType').value,
+                title: document.getElementById('fTitle').value,
+                fromDate: document.getElementById('fFromDate').value || null,
+                toDate: document.getElementById('fToDate').value || null,
+                notes: document.getElementById('fNotes').value,
+            };
+            if (!data.title) { alert('Title is required'); return; }
+            const result = await ReportAPI.create(data);
+            if (result) { closeModal(); loadItems(); }
+            else alert('Failed. Make sure Report Service is running on port 8090.');
+        }
+
+        async function deleteItem(id) { if(!confirm('Delete this report?')) return; await ReportAPI.delete(id); loadItems(); }
+
+        loadQuickStats();
+        loadItems();
+    </script>
+</body>
+</html>

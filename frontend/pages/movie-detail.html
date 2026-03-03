@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Tickets - CinemaBook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script>
+        tailwind.config = { theme: { extend: { colors: { primary: '#e50914', dark: '#141414', bmsbg: '#f5f5f5', bmsheader: '#333545' } } } }
+    </script>
+    <style>
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #e50914, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .date-btn {
+            border-bottom: 2px solid transparent;
+        }
+
+        .date-btn.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .time-btn {
+            border: 1px solid #d1d5db;
+            color: #10b981;
+        }
+
+        .time-btn:hover {
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <nav class="bg-bmsheader text-white w-full z-50 top-0">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-film text-red-500 text-2xl"></i>
+                <a href="../index.html" class="text-2xl font-bold">CinemaBook</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Movie Banner -->
+    <div class="bg-gray-900 text-white pt-8 pb-4 px-4 bg-opacity-90">
+        <div class="max-w-7xl mx-auto">
+            <h1 id="movieTitle" class="text-3xl font-bold mb-2">Loading Movie...</h1>
+            <div class="flex items-center space-x-4 text-sm text-gray-400">
+                <span id="movieGenre"
+                    class="border border-gray-600 px-2 py-1 rounded-full uppercase text-xs font-semibold"></span>
+                <span id="movieLanguage"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dates Strip -->
+    <div class="bg-white border-b shadow-sm sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 flex items-center">
+            <div id="datesContainer" class="flex space-x-2 overflow-x-auto py-2 hide-scrollbar">
+                <!-- Date Buttons will go here -->
+            </div>
+            <div class="ml-auto flex space-x-4 border-l pl-4 hidden md:flex">
+                <select class="text-sm bg-transparent border-0 outline-none text-gray-600 cursor-pointer">
+                    <option>Filter Price Range</option>
+                </select>
+                <select class="text-sm bg-transparent border-0 outline-none text-gray-600 cursor-pointer">
+                    <option>Filter Show Timings</option>
+                </select>
+                <i class="fas fa-search text-gray-400 mt-1 cursor-pointer"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theaters & Showtimes List -->
+    <div class="max-w-7xl mx-auto px-4 py-6 bg-white shadow-sm mt-4 min-h-[500px]">
+        <div id="loadingState" class="text-center py-10 text-gray-500">
+            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+            <p>Loading theaters and showtimes...</p>
+        </div>
+
+        <div id="emptyState" class="hidden py-10 text-center">
+            <div class="mx-auto w-48 mb-4 opacity-50"><i class="fas fa-video-slash text-5xl"></i></div>
+            <h3 class="text-lg font-bold text-gray-700">No shows found for this date</h3>
+            <p class="text-gray-500 text-sm mt-1">Please try selecting a different date.</p>
+        </div>
+
+        <div id="theatersList" class="flex flex-col">
+            <!-- Example Theater Row -->
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const movieId = urlParams.get('id');
+        let selectedDate = new Date().toISOString().split('T')[0];
+
+        if (!movieId) window.location.href = '../index.html';
+
+        // Init App
+        async function init() {
+            await loadMovieDetails();
+            renderDates();
+            await loadShowtimes();
+        }
+
+        // Load Movie Details
+        async function loadMovieDetails() {
+            const movie = await MovieAPI.getById(movieId);
+            if (!movie) {
+                alert("Movie not found");
+                window.location.href = '../index.html';
+                return;
+            }
+            document.getElementById('movieTitle').textContent = movie.title;
+            document.getElementById('movieGenre').textContent = movie.genre || 'DRAMA';
+            document.getElementById('movieLanguage').textContent = movie.language || 'Sinhala - 2D';
+        }
+
+        // Render Date Strip based on today
+        function renderDates() {
+            const container = document.getElementById('datesContainer');
+            let datesHTML = '';
+
+            const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+
+            for (let i = 0; i < 7; i++) {
+                const d = new Date();
+                d.setDate(d.getDate() + i);
+                const isoDate = d.toISOString().split('T')[0];
+                const dayName = i === 0 ? 'TODAY' : (i === 1 ? 'TOM' : days[d.getDay()]);
+                const dateNum = String(d.getDate()).padStart(2, '0');
+
+                const activeClass = isoDate === selectedDate ? 'active bg-green-50 rounded-t-xl' : 'text-gray-600';
+
+                datesHTML += `
+                    <button onclick="selectDate('${isoDate}')" class="date-btn flex flex-col items-center justify-center w-14 h-14 ${activeClass} transition mx-1">
+                        <span class="text-[10px] uppercase font-semibold">${dayName}</span>
+                        <span class="text-lg font-bold">${dateNum}</span>
+                    </button>
+                `;
+            }
+            container.innerHTML = datesHTML;
+        }
+
+        async function selectDate(isoDate) {
+            selectedDate = isoDate;
+            renderDates();
+            await loadShowtimes();
+        }
+
+        // Format AM/PM
+        function formatAMPM(timeString) {
+            if (!timeString) return '';
+            const [hoursStr, minutesStr] = timeString.split(':');
+            let h = parseInt(hoursStr);
+            const m = minutesStr;
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12;
+            h = h ? h : 12;
+            return `${String(h).padStart(2, '0')}:${m} ${ampm}`;
+        }
+
+        async function loadShowtimes() {
+            document.getElementById('loadingState').classList.remove('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('theatersList').innerHTML = '';
+
+            // Fetch theaters & showtimes
+            let allTheaters = await TheaterAPI.getAll() || [];
+            let showtimes = await ShowtimeAPI.getByMovieAndDate(movieId, selectedDate) || [];
+
+            document.getElementById('loadingState').classList.add('hidden');
+
+            if (showtimes.length === 0) {
+                document.getElementById('emptyState').classList.remove('hidden');
+                return;
+            }
+
+            // Group showtimes by theater
+            const grouped = {};
+            showtimes.forEach(st => {
+                if (!grouped[st.theaterId]) grouped[st.theaterId] = [];
+                grouped[st.theaterId].push(st);
+            });
+
+            // Sort showtimes by time
+            Object.keys(grouped).forEach(tid => {
+                grouped[tid].sort((a, b) => a.showTime.localeCompare(b.showTime));
+            });
+
+            let listHTML = '';
+            Object.keys(grouped).forEach(tid => {
+                const theater = allTheaters.find(t => t.id == tid) || { name: 'Theater ' + tid };
+
+                const timesHTML = grouped[tid].map(s => `
+                    <div class="border rounded px-4 py-2 cursor-pointer hover:shadow-md transition text-center min-w-[100px]"
+                         onclick="window.location.href='seat-layout.html?showtimeId=${s.id}'">
+                        <div class="text-sm font-semibold text-green-600">${formatAMPM(s.showTime)}</div>
+                        <div class="text-[10px] text-gray-500 uppercase mt-1">${s.screenNumber || 'N/A'}</div>
+                    </div>
+                `).join('');
+
+                listHTML += `
+                    <div class="flex flex-col md:flex-row py-4 border-b">
+                        <div class="md:w-1/3 mb-4 md:mb-0 flex items-center">
+                            <i class="far fa-heart text-gray-400 mr-3 cursor-pointer hover:text-red-500"></i>
+                            <div>
+                                <h3 class="font-bold text-sm underline cursor-pointer hover:text-red-600">${theater.name}</h3>
+                                <div class="text-xs text-green-600 mt-1 flex items-center"><i class="fas fa-ticket-alt mr-1"></i> M-Ticket Available</div>
+                            </div>
+                        </div>
+                        <div class="md:w-2/3">
+                            <div class="flex flex-wrap gap-4 items-center">
+                                ${timesHTML}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('theatersList').innerHTML = listHTML;
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

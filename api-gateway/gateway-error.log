@@ -1,0 +1,65 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< com.movie:api-gateway >------------------------
+[INFO] Building api-gateway 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:4.0.3:run (default-cli) > test-compile @ api-gateway >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ api-gateway ---
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ api-gateway ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ api-gateway ---
+[INFO] skip non existing resourceDirectory C:\Users\MSI KATANA\Downloads\movie-booking-system\movie-booking-system\api-gateway\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ api-gateway ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot:4.0.3:run (default-cli) < test-compile @ api-gateway <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:4.0.3:run (default-cli) @ api-gateway ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.3)
+
+2026-02-28T19:48:07.554+05:30  INFO 10960 --- [api-gateway] [           main] c.m.apigateway.ApiGatewayApplication     : Starting ApiGatewayApplication using Java 23.0.2 with PID 10960 (C:\Users\MSI KATANA\Downloads\movie-booking-system\movie-booking-system\api-gateway\target\classes started by MSI KATANA in C:\Users\MSI KATANA\Downloads\movie-booking-system\movie-booking-system\api-gateway)
+2026-02-28T19:48:07.554+05:30  INFO 10960 --- [api-gateway] [           main] c.m.apigateway.ApiGatewayApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-02-28T19:48:08.116+05:30  INFO 10960 --- [api-gateway] [           main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=7c4d130f-46ad-3829-92e5-feda6dff58f1
+2026-02-28T19:48:08.333+05:30  INFO 10960 --- [api-gateway] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-02-28T19:48:08.350+05:30  INFO 10960 --- [api-gateway] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-28T19:48:08.350+05:30  INFO 10960 --- [api-gateway] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.18]
+2026-02-28T19:48:08.404+05:30  INFO 10960 --- [api-gateway] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 801 ms
+2026-02-28T19:48:09.850+05:30  INFO 10960 --- [api-gateway] [           main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-02-28T19:48:10.054+05:30  INFO 10960 --- [api-gateway] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-02-28T19:48:10.094+05:30  INFO 10960 --- [api-gateway] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-02-28T19:48:11.119+05:30  INFO 10960 --- [api-gateway] [           main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-02-28T19:48:11.131+05:30  INFO 10960 --- [api-gateway] [           main] c.m.apigateway.ApiGatewayApplication     : Started ApiGatewayApplication in 4.933 seconds (process running for 5.37)
+2026-02-28T19:49:04.934+05:30  INFO 10960 --- [api-gateway] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-28T19:49:04.934+05:30  INFO 10960 --- [api-gateway] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-02-28T19:49:04.936+05:30  INFO 10960 --- [api-gateway] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  04:37 min
+[INFO] Finished at: 2026-02-28T19:52:41+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:4.0.3:run (default-cli) on project api-gateway: Process terminated with exit code: -1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
