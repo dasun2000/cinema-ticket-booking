@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,11 +8,24 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        body { background: #0d0d0d; }
-        .sidebar-link.active, .sidebar-link:hover { background: rgba(229,9,20,0.15); color: #ef4444; }
-        .gradient-text { background: linear-gradient(to right,#e50914,#ff6b6b); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        body {
+            background: #0d0d0d;
+        }
+
+        .sidebar-link.active,
+        .sidebar-link:hover {
+            background: rgba(229, 9, 20, 0.15);
+            color: #ef4444;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #e50914, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
     </style>
 </head>
+
 <body class="text-white min-h-screen flex">
 
     <!-- Sidebar -->
@@ -27,28 +41,53 @@
         </div>
 
         <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
-            <a href="dashboard.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl transition text-sm bg-red-900/20 text-red-500"><i class="fas fa-tachometer-alt w-5"></i> Dashboard</a>
-            <a href="movies.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-film w-5"></i> Movies</a>
-            <a href="theaters.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-building w-5"></i> Theaters</a>
-            <a href="showtimes.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-clock w-5"></i> Showtimes</a>
-            <a href="bookings.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-ticket-alt w-5"></i> Bookings</a>
-            <a href="seats.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-chair w-5"></i> Seats</a>
-            <a href="tickets.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-receipt w-5"></i> Tickets</a>
-            <a href="users.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-users w-5"></i> Users</a>
-            <a href="pricing.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-tags w-5"></i> Pricing</a>
-            <a href="reports.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-chart-bar w-5"></i> Reports</a>
+            <a href="dashboard.html"
+                class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl transition text-sm bg-red-900/20 text-red-500"><i
+                    class="fas fa-tachometer-alt w-5"></i> Dashboard</a>
+            <a href="movies.html"
+                class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
+                    class="fas fa-film w-5"></i> Movies</a>
+            <a href="theaters.html"
+                class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
+                    class="fas fa-building w-5"></i> Theaters</a>
+            <a href="showtimes.html"
+                class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
+                    class="fas fa-clock w-5"></i> Showtimes</a>
+            <a href="bookings.html"
+                class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
+                    class="fas fa-ticket-alt w-5"></i> Bookings</a>
+            <a href="seats.html"
+                class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
+                    class="fas fa-chair w-5"></i> Seats</a>
+            <a href="tickets.html"
+                class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
+                    class="fas fa-receipt w-5"></i> Tickets</a>
+            <a href="users.html"
+                class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
+                    class="fas fa-users w-5"></i> Users</a>
+            <a href="pricing.html"
+                class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
+                    class="fas fa-tags w-5"></i> Pricing</a>
+            <a href="promotions.html"
+                class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
+                    class="fas fa-gift w-5"></i> Promotions</a>
+            <a href="reports.html"
+                class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
+                    class="fas fa-chart-bar w-5"></i> Reports</a>
         </nav>
 
         <!-- Logout -->
         <div class="p-4 border-t border-gray-800">
             <div class="flex items-center gap-3 px-4 py-2 mb-2">
-                <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center text-xs font-bold" id="adminInitial">A</div>
+                <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center text-xs font-bold"
+                    id="adminInitial">A</div>
                 <div>
                     <div class="text-sm font-medium" id="adminName">Admin</div>
                     <div class="text-xs text-gray-500" id="adminRole">SUPER_ADMIN</div>
                 </div>
             </div>
-            <button onclick="doLogout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-red-400 hover:bg-red-950 transition text-sm">
+            <button onclick="doLogout()"
+                class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-red-400 hover:bg-red-950 transition text-sm">
                 <i class="fas fa-sign-out-alt w-5"></i> Logout
             </button>
         </div>
@@ -137,7 +176,9 @@
                         </tr>
                     </thead>
                     <tbody id="recentBookings">
-                        <tr><td colspan="5" class="py-8 text-center text-gray-600">Loading bookings...</td></tr>
+                        <tr>
+                            <td colspan="5" class="py-8 text-center text-gray-600">Loading bookings...</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -156,7 +197,7 @@
         }
 
         // Date
-        document.getElementById('dateDisplay').textContent = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+        document.getElementById('dateDisplay').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
         // Service status
         const services = [
@@ -166,8 +207,7 @@
             { name: 'Showtimes', port: 8084, path: '/api/showtimes' },
             { name: 'Bookings', port: 8085, path: '/api/bookings' },
             { name: 'Seats', port: 8086, path: '/api/seats' },
-            { name: 'Reviews', port: 8087, path: '/api/reviews' },
-            { name: 'Notifications', port: 8088, path: '/api/notifications' },
+            { name: 'Promotions', port: 8087, path: '/api/promotions' },
             { name: 'Admin', port: 8089, path: '/api/admin' },
             { name: 'Reports', port: 8090, path: '/api/reports' },
         ];
@@ -188,9 +228,9 @@
                     const dot = document.getElementById(`dot-${s.port}`);
                     if (r.ok) { dot.className = 'w-2 h-2 rounded-full bg-green-500'; }
                     else { dot.className = 'w-2 h-2 rounded-full bg-yellow-500'; }
-                } catch(e) {
+                } catch (e) {
                     const dot = document.getElementById(`dot-${s.port}`);
-                    if(dot) dot.className = 'w-2 h-2 rounded-full bg-red-600';
+                    if (dot) dot.className = 'w-2 h-2 rounded-full bg-red-600';
                 }
             }
         }
@@ -212,14 +252,13 @@
             if (bookings && bookings.length > 0) {
                 tbody.innerHTML = bookings.slice(0, 8).map(b => `
                 <tr class="border-b border-gray-800 hover:bg-gray-800 transition">
-                    <td class="py-3 text-blue-400 font-mono text-xs">${b.bookingReference || '#'+b.id}</td>
+                    <td class="py-3 text-blue-400 font-mono text-xs">${b.bookingReference || '#' + b.id}</td>
                     <td class="py-3">${b.customerName || 'N/A'}</td>
                     <td class="py-3">${b.numberOfSeats || '?'}</td>
                     <td class="py-3 text-green-400 font-bold">Rs. ${b.totalAmount || '0'}</td>
                     <td class="py-3">
-                        <span class="px-2 py-1 rounded-full text-xs font-bold ${
-                            b.status === 'CONFIRMED' ? 'bg-green-900 text-green-400' :
-                            b.status === 'CANCELLED' ? 'bg-red-900 text-red-400' :
+                        <span class="px-2 py-1 rounded-full text-xs font-bold ${b.status === 'CONFIRMED' ? 'bg-green-900 text-green-400' :
+                        b.status === 'CANCELLED' ? 'bg-red-900 text-red-400' :
                             'bg-yellow-900 text-yellow-400'}">${b.status}</span>
                     </td>
                 </tr>`).join('');
@@ -240,4 +279,5 @@
         loadStats();
     </script>
 </body>
+
 </html>

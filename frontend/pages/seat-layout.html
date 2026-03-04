@@ -259,9 +259,20 @@
                     </div>
 
                     <div
-                        class="flex justify-between items-center border-t border-b border-gray-200 border-dashed py-3 mb-6">
+                        class="flex justify-between items-center border-t border-b border-gray-200 border-dashed py-3 mb-4">
                         <span class="font-semibold text-gray-800 text-sm">Sub total</span>
                         <span class="font-bold text-gray-800 text-sm" id="sumSubTotal"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="flex gap-2">
+                            <input type="text" id="promoCode"
+                                class="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:border-red-500 bg-white"
+                                placeholder="Promo Code (Optional)">
+                            <button id="applyPromoBtn" onclick="applyPromo()"
+                                class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-bold shadow-sm transition">APPLY</button>
+                        </div>
+                        <div id="promoMsg" class="text-xs mt-1 font-medium hidden"></div>
                     </div>
 
                     <div class="bg-yellow-100/60 -mx-6 px-6 py-4 flex justify-between items-center mb-6">
@@ -391,6 +402,7 @@
         let desiredSeatCount = 2; // Default to 2
         let totalSeatPrice = 0;
         let totalInternetFee = 0;
+        let appliedPromo = null;
 
         let odcPrice = 550, odcInternetFee = 100;
         let boxPrice = 1200, boxInternetFee = 150;
@@ -617,11 +629,78 @@
             totalInternetFee = 0;
             selectedSeats.forEach(s => totalInternetFee += (s.includes('M') ? boxInternetFee : odcInternetFee));
 
-            document.getElementById('sumSubTotal').textContent = `LKR ${(totalSeatPrice + totalInternetFee).toFixed(2)}`;
-            document.getElementById('sumPayable').textContent = `LKR ${(totalSeatPrice + totalInternetFee).toFixed(2)}`;
+            // Promo reset
+            appliedPromo = null;
+            if (document.getElementById('promoCode')) {
+                document.getElementById('promoCode').value = '';
+                document.getElementById('promoCode').disabled = false;
+            }
+            if (document.getElementById('applyPromoBtn')) {
+                document.getElementById('applyPromoBtn').disabled = false;
+                document.getElementById('applyPromoBtn').innerHTML = 'APPLY';
+            }
+            if (document.getElementById('promoMsg')) {
+                document.getElementById('promoMsg').className = 'text-xs mt-1 font-medium hidden';
+            }
+
+            updateFinalTotals();
 
             // Re-check terms button state just in case
             document.getElementById('acceptTerms').checked = false;
+        }
+
+        async function applyPromo() {
+            const code = document.getElementById('promoCode').value.trim();
+            const msgEl = document.getElementById('promoMsg');
+            const btn = document.getElementById('applyPromoBtn');
+
+            if (!code) return;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+            try {
+                // Using the specific validate endpoint based on PromotionAPI
+                const promo = await PromotionAPI.validate(code);
+                if (promo && promo.id) {
+                    appliedPromo = promo;
+                    msgEl.textContent = "Promo Applied! " + promo.discountPercentage + "% OFF";
+                    msgEl.className = "text-xs mt-1 font-bold text-green-600";
+                    document.getElementById('promoCode').disabled = true;
+                    btn.innerHTML = 'APPLIED';
+                    updateFinalTotals();
+                } else {
+                    msgEl.textContent = "Invalid or expired promo code.";
+                    msgEl.className = "text-xs mt-1 font-bold text-red-500";
+                    btn.disabled = false;
+                    btn.innerHTML = 'APPLY';
+                }
+            } catch (e) {
+                msgEl.textContent = "Failed to apply promo code.";
+                msgEl.className = "text-xs mt-1 font-bold text-red-500";
+                btn.disabled = false;
+                btn.innerHTML = 'APPLY';
+            }
+        }
+
+        function updateFinalTotals() {
+            let baseTotal = totalSeatPrice + totalInternetFee;
+            let discountAmt = 0;
+
+            if (appliedPromo) {
+                discountAmt = (baseTotal * appliedPromo.discountPercentage) / 100;
+            }
+
+            let finalPayable = baseTotal - discountAmt;
+            if (finalPayable < 0) finalPayable = 0;
+
+            if (appliedPromo) {
+                document.getElementById('sumSubTotal').innerHTML = `LKR ${baseTotal.toFixed(2)}<br><span class="text-green-600 text-xs">Discount: -LKR ${discountAmt.toFixed(2)}</span>`;
+            } else {
+                document.getElementById('sumSubTotal').textContent = `LKR ${baseTotal.toFixed(2)}`;
+            }
+
+            document.getElementById('sumPayable').textContent = `LKR ${finalPayable.toFixed(2)}`;
         }
 
         async function confirmBooking() {
@@ -637,7 +716,9 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
             btn.disabled = true;
 
-            const finalAmount = totalSeatPrice + totalInternetFee; // incl fee
+            let baseTotal = totalSeatPrice + totalInternetFee;
+            let discountAmt = appliedPromo ? (baseTotal * appliedPromo.discountPercentage) / 100 : 0;
+            const finalAmount = Math.max(0, baseTotal - discountAmt); // incl fee & discount
             const ref = 'BK-' + Math.floor(100000 + Math.random() * 900000);
 
             const payload = {
