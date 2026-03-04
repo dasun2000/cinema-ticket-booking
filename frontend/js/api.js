@@ -129,7 +129,7 @@ const PricingAPI = {
     getAll: () => apiFetch(`${API.PRICING_SERVICE}/api/pricing`),
     getById: (id) => apiFetch(`${API.PRICING_SERVICE}/api/pricing/${id}`),
     getByName: (name) => apiFetch(`${API.PRICING_SERVICE}/api/pricing/name/${name}`),
-    create: (data) => apiFetch(`${API.PRICING_SERVICE}/api/pricing`, { method: 'POST', body: JSON.stringify(data) }),
+    create: (data) => apiFetch(`${API.PRICING_SERVICE}/api/pricing/create`, { method: 'POST', body: JSON.stringify(data) }),
     update: (id, data) => apiFetch(`${API.PRICING_SERVICE}/api/pricing/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
     delete: (id) => apiFetch(`${API.PRICING_SERVICE}/api/pricing/${id}`, { method: 'DELETE' }),
 };
