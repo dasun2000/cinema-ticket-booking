@@ -12,6 +12,7 @@ const API = {
     REPORT_SERVICE: GATEWAY_URL,
     PRICING_SERVICE: GATEWAY_URL,
     TICKET_SERVICE: GATEWAY_URL,
+    PROMOTION_SERVICE: GATEWAY_URL,
 };
 
 // Generic fetch helper
@@ -142,6 +143,17 @@ const TicketAPI = {
     issue: (data) => apiFetch(`${API.TICKET_SERVICE}/api/tickets/issue`, { method: 'POST', body: JSON.stringify(data) }),
     updateStatus: (id, status) => apiFetch(`${API.TICKET_SERVICE}/api/tickets/${id}/status?status=${status}`, { method: 'PUT' }),
     delete: (id) => apiFetch(`${API.TICKET_SERVICE}/api/tickets/${id}`, { method: 'DELETE' }),
+};
+
+// ==== Promotion Service ====
+const PromotionAPI = {
+    getAll: () => apiFetch(`${API.PROMOTION_SERVICE}/api/promotions`),
+    getById: (id) => apiFetch(`${API.PROMOTION_SERVICE}/api/promotions/${id}`),
+    getActive: () => apiFetch(`${API.PROMOTION_SERVICE}/api/promotions/active`),
+    create: (data) => apiFetch(`${API.PROMOTION_SERVICE}/api/promotions`, { method: 'POST', body: JSON.stringify(data) }),
+    update: (id, data) => apiFetch(`${API.PROMOTION_SERVICE}/api/promotions/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    delete: (id) => apiFetch(`${API.PROMOTION_SERVICE}/api/promotions/${id}`, { method: 'DELETE' }),
+    validate: (code) => apiFetch(`${API.PROMOTION_SERVICE}/api/promotions/validate?code=${code}`),
 };
 
 // Session helpers
