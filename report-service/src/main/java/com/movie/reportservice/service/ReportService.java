@@ -14,25 +14,58 @@ public class ReportService {
     @Autowired
     private ReportRepository reportRepository;
 
-    public List<Report> getAllReports() { return reportRepository.findAll(); }
-    public Optional<Report> getReportById(Long id) { return reportRepository.findById(id); }
+    public List<Report> getAllReports() {
+        return reportRepository.findAll();
+    }
+
+    public Optional<Report> getReportById(Long id) {
+        return reportRepository.findById(id);
+    }
 
     public Report createReport(Report report) {
         report.setCreatedAt(LocalDateTime.now());
         return reportRepository.save(report);
     }
 
-    public Report updateReport(Long id, Report updated) {
+    public Report updateReportFull(Long id, Report updated) {
         return reportRepository.findById(id).map(r -> {
+            r.setName(updated.getName());
+            r.setFromDate(updated.getFromDate());
+            r.setToDate(updated.getToDate());
             r.setReportType(updated.getReportType());
-            r.setTotalBookings(updated.getTotalBookings());
-            r.setTotalRevenue(updated.getTotalRevenue());
-            r.setReportData(updated.getReportData());
+            r.setSchedule(updated.getSchedule());
+            r.setStatus(updated.getStatus());
             return reportRepository.save(r);
         }).orElseThrow(() -> new RuntimeException("Report not found: " + id));
     }
 
-    public void deleteReport(Long id) { reportRepository.deleteById(id); }
-    public List<Report> getByType(String type) { return reportRepository.findByReportType(type); }
-    public List<Report> getByMovie(Long movieId) { return reportRepository.findByMovieId(movieId); }
+    public Report updateReportPartial(Long id, Report updates) {
+        return reportRepository.findById(id).map(r -> {
+            if (updates.getName() != null)
+                r.setName(updates.getName());
+            if (updates.getFromDate() != null)
+                r.setFromDate(updates.getFromDate());
+            if (updates.getToDate() != null)
+                r.setToDate(updates.getToDate());
+            if (updates.getReportType() != null)
+                r.setReportType(updates.getReportType());
+            if (updates.getSchedule() != null)
+                r.setSchedule(updates.getSchedule());
+            if (updates.getStatus() != null)
+                r.setStatus(updates.getStatus());
+            return reportRepository.save(r);
+        }).orElseThrow(() -> new RuntimeException("Report not found: " + id));
+    }
+
+    public void deleteReport(Long id) {
+        reportRepository.deleteById(id);
+    }
+
+    public List<Report> getByType(String type) {
+        return reportRepository.findByReportType(type);
+    }
+
+    public List<Report> getByMovie(Long movieId) {
+        return reportRepository.findByMovieId(movieId);
+    }
 }

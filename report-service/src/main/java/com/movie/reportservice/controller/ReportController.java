@@ -16,7 +16,9 @@ public class ReportController {
     private ReportService reportService;
 
     @GetMapping
-    public List<Report> getAllReports() { return reportService.getAllReports(); }
+    public List<Report> getAllReports() {
+        return reportService.getAllReports();
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Report> getReportById(@PathVariable Long id) {
@@ -24,12 +26,36 @@ public class ReportController {
     }
 
     @PostMapping
-    public Report createReport(@RequestBody Report report) { return reportService.createReport(report); }
+    public Report createReport(@RequestBody Report report) {
+        return reportService.createReport(report);
+    }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Report> updateReport(@PathVariable Long id, @RequestBody Report report) {
-        try { return ResponseEntity.ok(reportService.updateReport(id, report)); }
-        catch (RuntimeException e) { return ResponseEntity.notFound().build(); }
+    public ResponseEntity<?> updateReportFull(@PathVariable Long id, @RequestBody Report report) {
+        try {
+            return ResponseEntity.ok(reportService.updateReportFull(id, report));
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            if (e.getMessage() != null && e.getMessage().contains("Report not found")) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.status(500)
+                    .body(e.getMessage() != null ? e.getMessage() : "An unexpected error occurred");
+        }
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateReportPartial(@PathVariable Long id, @RequestBody Report report) {
+        try {
+            return ResponseEntity.ok(reportService.updateReportPartial(id, report));
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            if (e.getMessage() != null && e.getMessage().contains("Report not found")) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.status(500)
+                    .body(e.getMessage() != null ? e.getMessage() : "An unexpected error occurred");
+        }
     }
 
     @DeleteMapping("/{id}")
@@ -39,8 +65,12 @@ public class ReportController {
     }
 
     @GetMapping("/type/{type}")
-    public List<Report> getByType(@PathVariable String type) { return reportService.getByType(type); }
+    public List<Report> getByType(@PathVariable String type) {
+        return reportService.getByType(type);
+    }
 
     @GetMapping("/movie/{movieId}")
-    public List<Report> getByMovie(@PathVariable Long movieId) { return reportService.getByMovie(movieId); }
+    public List<Report> getByMovie(@PathVariable Long movieId) {
+        return reportService.getByMovie(movieId);
+    }
 }

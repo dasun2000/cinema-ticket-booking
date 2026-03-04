@@ -120,6 +120,7 @@ const ReportAPI = {
     getById: (id) => apiFetch(`${API.REPORT_SERVICE}/api/reports/${id}`),
     create: (data) => apiFetch(`${API.REPORT_SERVICE}/api/reports`, { method: 'POST', body: JSON.stringify(data) }),
     update: (id, data) => apiFetch(`${API.REPORT_SERVICE}/api/reports/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    updatePartial: (id, data) => apiFetch(`${API.REPORT_SERVICE}/api/reports/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
     delete: (id) => apiFetch(`${API.REPORT_SERVICE}/api/reports/${id}`, { method: 'DELETE' }),
     getByType: (type) => apiFetch(`${API.REPORT_SERVICE}/api/reports/type/${type}`),
 };
