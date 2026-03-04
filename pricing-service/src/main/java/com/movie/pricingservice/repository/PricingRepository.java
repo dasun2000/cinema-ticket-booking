@@ -8,5 +8,9 @@ import java.util.Optional;
 
 @Repository
 public interface PricingRepository extends JpaRepository<Pricing, Long> {
-    Optional<Pricing> findByName(String name);
+    Optional<Pricing> findByMovieName(String movieName);
+
+    Optional<Pricing> findBySeatType(String seatType);
+
+    Optional<Pricing> findByDayType(String dayType);
 }

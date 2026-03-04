@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/pricing")
+@CrossOrigin(origins = "*")
 public class PricingController {
 
     @Autowired
@@ -27,14 +28,28 @@ public class PricingController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/name/{name}")
-    public ResponseEntity<Pricing> getPricingByName(@PathVariable String name) {
-        return pricingService.getPricingByName(name)
+    @GetMapping("/movie/{movieName}")
+    public ResponseEntity<Pricing> getPricingByMovieName(@PathVariable String movieName) {
+        return pricingService.getPricingByMovieName(movieName)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    @GetMapping("/seat/{seatType}")
+    public ResponseEntity<Pricing> getPricingBySeatType(@PathVariable String seatType) {
+        return pricingService.getPricingBySeatType(seatType)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/day/{dayType}")
+    public ResponseEntity<Pricing> getPricingByDayType(@PathVariable String dayType) {
+        return pricingService.getPricingByDayType(dayType)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/create")
     public Pricing createPricing(@RequestBody Pricing pricing) {
         return pricingService.createPricing(pricing);
     }
