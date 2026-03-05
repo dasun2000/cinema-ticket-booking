@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Selection - Movie Booking</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .interactive-scale {
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .interactive-scale:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-950 min-h-screen text-white">
+
+    <div class="container mx-auto px-4 py-12 max-w-4xl opacity-0 transition-opacity duration-1000 ease-in-out"
+        id="main-container">
+
+        <header class="text-center mb-12">
+            <h1
+                class="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-blue-400 mb-4">
+                Select Your Tickets
+            </h1>
+            <p class="text-lg text-indigo-200">Choose the number of tickets you want to book.</p>
+        </header>
+
+        <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-white/20">
+            <!-- Global Ticket Limit display -->
+            <div class="flex justify-between items-center mb-6 border-b border-indigo-400/30 pb-4">
+                <span class="text-xl font-semibold text-indigo-100">Booking Limit</span>
+                <span class="text-2xl font-bold text-teal-300" id="limit-display">Loading...</span>
+            </div>
+
+            <!-- Single Ticket Selection Control -->
+            <div
+                class="flex flex-col md:flex-row items-center justify-between p-6 bg-white/5 rounded-2xl border border-white/10 gap-6">
+                <div class="flex items-center space-x-6">
+                    <div
+                        class="w-24 h-24 rounded-2xl bg-gradient-to-br from-indigo-500/50 to-purple-600/50 p-4 shadow-inner flex items-center justify-center">
+                        <img id="dynamic-icon" src="https://cdn-icons-png.flaticon.com/512/411/411833.png"
+                            alt="Dynamic Ticket Icon"
+                            class="w-full h-full object-contain transition-all duration-300" />
+                    </div>
+                    <div>
+                        <h3 class="text-3xl font-semibold">Tickets</h3>
+                        <p class="text-indigo-300 mt-2 text-lg" id="icon-description">Select your ticket count</p>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="flex items-center space-x-6 bg-black/20 rounded-full p-2 border border-white/5">
+                    <button onclick="updateGlobalCount(-1)"
+                        class="w-14 h-14 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-4xl font-bold transition-colors">
+                        -
+                    </button>
+                    <span class="w-16 text-center font-bold text-4xl" id="global-count-display">0</span>
+                    <button onclick="updateGlobalCount(1)"
+                        class="w-14 h-14 rounded-full bg-teal-500/80 hover:bg-teal-400 flex items-center justify-center text-4xl font-bold transition-colors shadow-lg">
+                        +
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-12 flex justify-end items-center">
+                <button onclick="proceedToCheckout()"
+                    class="bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-400 hover:to-blue-500 text-white font-bold py-4 px-10 rounded-full shadow-lg shadow-teal-500/50 interactive-scale transition-all duration-300 text-xl">
+                    Proceed to Seat Selection →
+                </button>
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <!-- Script to handle interactions and API calls -->
+    <script>
+        let maxLimit = 10;
+        let globalSelectedCount = 0;
+        let iconRules = [];
+
+        const DEFAULT_ICON = "https://cdn-icons-png.flaticon.com/512/411/411833.png";
+
+        async function init() {
+            try {
+                // Fetch Settings (max limit)
+                const settingsRes = await fetch('/api/config/settings');
+                if (settingsRes.ok) {
+                    const settings = await settingsRes.json();
+                    maxLimit = settings.maxTicketLimit || 10;
+                    document.getElementById('limit-display').innerText = maxLimit + " max per user";
+                }
+
+                // Fetch Options (Icons)
+                const optionsRes = await fetch('/api/config/options');
+                if (optionsRes.ok) {
+                    iconRules = await optionsRes.json();
+                    iconRules.sort((a, b) => a.ticketCount - b.ticketCount);
+                }
+
+                updateGlobalCount(0); // Init state
+
+                // Fade in animation
+                document.getElementById('main-container').classList.remove('opacity-0');
+            } catch (err) {
+                console.error("Error loading data:", err);
+            }
+        }
+
+        function updateGlobalCount(change) {
+            const newCount = globalSelectedCount + change;
+
+            // Cannot go below 0
+            if (newCount < 0) return;
+
+            // Check max limit
+            if (newCount > maxLimit) {
+                alert(`Cannot select more than ${maxLimit} tickets.`);
+                return;
+            }
+
+            globalSelectedCount = newCount;
+
+            // Update UI count
+            document.getElementById('global-count-display').innerText = globalSelectedCount;
+
+            // Update Icon
+            updateIcon(globalSelectedCount);
+        }
+
+        function updateIcon(count) {
+            let matchedRule = iconRules.find(r => r.ticketCount === count);
+
+            // If no exact match, fallback to the closest smaller one, or default
+            if (!matchedRule && iconRules.length > 0) {
+                const fallingRules = iconRules.filter(r => r.ticketCount <= count);
+                if (fallingRules.length > 0) {
+                    matchedRule = fallingRules[fallingRules.length - 1]; // pick highest valid
+                } else {
+                    matchedRule = iconRules[0]; // pick lowest available
+                }
+            }
+
+            const iconEl = document.getElementById('dynamic-icon');
+            const descEl = document.getElementById('icon-description');
+
+            if (matchedRule) {
+                iconEl.src = matchedRule.iconUrl;
+            } else {
+                iconEl.src = DEFAULT_ICON;
+            }
+
+            if (count === 0) {
+                descEl.innerText = "Please add a ticket";
+            } else if (count === 1) {
+                descEl.innerText = "1 Person";
+            } else if (count === 2) {
+                descEl.innerText = "2 People (Couple)";
+            } else {
+                descEl.innerText = `${count} People`;
+            }
+        }
+
+        function proceedToCheckout() {
+            if (globalSelectedCount === 0) {
+                alert("Please select at least 1 ticket.");
+                return;
+            }
+
+            // Extract existing query parameters (like showtimeId, hallId, etc.) to pass them along
+            const currentParams = new URLSearchParams(window.location.search);
+
+            // Build the URL for the Seat Service (Running on Port 8086)
+            const seatServiceUrl = new URL('http://localhost:8086/index.html');
+
+            // Copy all existing params
+            currentParams.forEach((value, key) => {
+                seatServiceUrl.searchParams.append(key, value);
+            });
+
+            // Add the newly selected ticket count
+            seatServiceUrl.searchParams.append('ticketCount', globalSelectedCount);
+
+            window.location.href = seatServiceUrl.toString();
+        }
+
+        window.onload = init;
+    </script>
+</body>
+
+</html>
