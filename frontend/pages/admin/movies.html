@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies Management - CinemaBook Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body { background: #0d0d0d; }
+        .sidebar-link.active, .sidebar-link:hover { background: rgba(229,9,20,0.15); color: #ef4444; }
+    </style>
+</head>
+<body class="text-white min-h-screen flex">
+
+    <!-- Sidebar (same as dashboard) -->
+    <aside class="w-64 bg-gray-950 border-r border-gray-800 flex flex-col fixed h-full z-20">
+        <div class="p-5 border-b border-gray-800">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-film text-red-600 text-2xl"></i>
+                <div>
+                    <div class="font-black text-lg text-red-500">CinemaBook</div>
+                    <div class="text-xs text-gray-500">Admin Panel</div>
+                </div>
+            </div>
+        </div>
+        <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+            <a href="dashboard.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-tachometer-alt w-5"></i> Dashboard</a>
+            <a href="movies.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl transition text-sm bg-red-900/20 text-red-500"><i class="fas fa-film w-5"></i> Movies</a>
+            <a href="theaters.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-building w-5"></i> Theaters</a>
+            <a href="showtimes.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-clock w-5"></i> Showtimes</a>
+            <a href="bookings.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-ticket-alt w-5"></i> Bookings</a>
+            <a href="seats.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-chair w-5"></i> Seats</a>
+            <a href="tickets.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-receipt w-5"></i> Tickets</a>
+            <a href="users.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-users w-5"></i> Users</a>
+            <a href="pricing.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-tags w-5"></i> Pricing</a>
+            <a href="reports.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i class="fas fa-chart-bar w-5"></i> Reports</a>
+        </nav>
+        <div class="p-4 border-t border-gray-800">
+            <button onclick="doLogout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-red-400 hover:bg-red-950 transition text-sm">
+                <i class="fas fa-sign-out-alt w-5"></i> Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="ml-64 flex-1 p-8">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-black">Movies</h1>
+                <p class="text-gray-500 mt-1">Manage all movies in the system</p>
+            </div>
+            <button onclick="openModal()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition">
+                <i class="fas fa-plus"></i> Add Movie
+            </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="flex gap-4 mb-6">
+            <input id="searchBox" type="text" placeholder="Search movies..." onkeyup="filterTable()" 
+                class="bg-gray-900 border border-gray-700 text-white px-4 py-2 rounded-xl flex-1 focus:outline-none focus:border-red-500">
+            <select id="statusFilter" onchange="filterTable()" class="bg-gray-900 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500">
+                <option value="">All Status</option>
+                <option value="NOW_SHOWING">Now Showing</option>
+                <option value="COMING_SOON">Coming Soon</option>
+                <option value="ENDED">Ended</option>
+            </select>
+        </div>
+
+        <!-- Table -->
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-800 text-gray-400">
+                        <tr>
+                            <th class="px-6 py-4 text-left">ID</th>
+                            <th class="px-6 py-4 text-left">Title</th>
+                            <th class="px-6 py-4 text-left">Genre</th>
+                            <th class="px-6 py-4 text-left">Language</th>
+                            <th class="px-6 py-4 text-left">Duration</th>
+                            <th class="px-6 py-4 text-left">Rating</th>
+                            <th class="px-6 py-4 text-left">Status</th>
+                            <th class="px-6 py-4 text-left">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="moviesTableBody">
+                        <tr><td colspan="8" class="text-center py-8 text-gray-600">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add/Edit Modal -->
+    <div id="movieModal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
+        <div class="bg-gray-900 border border-gray-700 rounded-2xl p-8 w-full max-w-2xl max-h-screen overflow-y-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold" id="modalTitle">Add Movie</h3>
+                <button onclick="closeModal()" class="text-gray-500 hover:text-white text-xl"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="col-span-2">
+                    <label class="text-sm text-gray-400 block mb-1">Title *</label>
+                    <input id="fTitle" class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500" placeholder="Movie title">
+                </div>
+                <div>
+                    <label class="text-sm text-gray-400 block mb-1">Genre</label>
+                    <select id="fGenre" class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500">
+                        <option value="Action">Action</option>
+                        <option value="Drama">Drama</option>
+                        <option value="Comedy">Comedy</option>
+                        <option value="Horror">Horror</option>
+                        <option value="Sci-Fi">Sci-Fi</option>
+                        <option value="Romance">Romance</option>
+                        <option value="Thriller">Thriller</option>
+                        <option value="Animation">Animation</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-sm text-gray-400 block mb-1">Language</label>
+                    <select id="fLanguage" class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500">
+                        <option value="English">English</option>
+                        <option value="Sinhala">Sinhala</option>
+                        <option value="Tamil">Tamil</option>
+                        <option value="Hindi">Hindi</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-sm text-gray-400 block mb-1">Duration (min)</label>
+                    <input id="fDuration" type="number" class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500" placeholder="120">
+                </div>
+                <div>
+                    <label class="text-sm text-gray-400 block mb-1">Rating (0-10)</label>
+                    <input id="fRating" type="number" step="0.1" min="0" max="10" class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500" placeholder="7.5">
+                </div>
+                <div>
+                    <label class="text-sm text-gray-400 block mb-1">Director</label>
+                    <input id="fDirector" class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500" placeholder="Director name">
+                </div>
+                <div>
+                    <label class="text-sm text-gray-400 block mb-1">Release Date</label>
+                    <input id="fReleaseDate" type="date" class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500">
+                </div>
+                <div>
+                    <label class="text-sm text-gray-400 block mb-1">Status</label>
+                    <select id="fStatus" class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500">
+                        <option value="COMING_SOON">Coming Soon</option>
+                        <option value="NOW_SHOWING">Now Showing</option>
+                        <option value="ENDED">Ended</option>
+                    </select>
+                </div>
+                <div class="col-span-2">
+                    <label class="text-sm text-gray-400 block mb-1">Cast</label>
+                    <input id="fCast" class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500" placeholder="Actor 1, Actor 2, ...">
+                </div>
+                <div class="col-span-2">
+                    <label class="text-sm text-gray-400 block mb-1">Poster URL</label>
+                    <input id="fPosterUrl" class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500" placeholder="https://...">
+                </div>
+                <div class="col-span-2">
+                    <label class="text-sm text-gray-400 block mb-1">Description</label>
+                    <textarea id="fDescription" rows="3" class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl focus:outline-none focus:border-red-500" placeholder="Movie description..."></textarea>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="saveMovie()" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-bold transition">
+                    <i class="fas fa-save mr-2"></i> Save Movie
+                </button>
+                <button onclick="closeModal()" class="px-6 py-3 rounded-xl bg-gray-800 text-gray-300 hover:bg-gray-700 transition">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/api.js"></script>
+    <script>
+        if (!Session.isAdminLoggedIn()) window.location.href = 'login.html';
+        
+        let allMovies = [];
+        let editingId = null;
+
+        async function loadMovies() {
+            const data = await MovieAPI.getAll();
+            allMovies = data || [];
+            renderTable(allMovies);
+        }
+
+        function renderTable(movies) {
+            const tbody = document.getElementById('moviesTableBody');
+            if (!movies.length) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center py-8 text-gray-600">No movies found. Backend might not be running.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = movies.map(m => `
+            <tr class="border-b border-gray-800 hover:bg-gray-800 transition">
+                <td class="px-6 py-4 text-gray-500">${m.id}</td>
+                <td class="px-6 py-4 font-medium">${m.title}</td>
+                <td class="px-6 py-4 text-gray-400">${m.genre || '-'}</td>
+                <td class="px-6 py-4 text-gray-400">${m.language || '-'}</td>
+                <td class="px-6 py-4 text-gray-400">${m.durationMinutes ? m.durationMinutes + ' min' : '-'}</td>
+                <td class="px-6 py-4 text-yellow-400 font-bold">${m.rating || '?'}</td>
+                <td class="px-6 py-4">
+                    <span class="px-2 py-1 rounded-full text-xs font-bold ${m.status === 'NOW_SHOWING' ? 'bg-green-900 text-green-400' : m.status === 'ENDED' ? 'bg-gray-800 text-gray-400' : 'bg-yellow-900 text-yellow-400'}">${m.status || 'N/A'}</span>
+                </td>
+                <td class="px-6 py-4">
+                    <div class="flex gap-2">
+                        <button onclick="editMovie(${m.id})" class="text-blue-400 hover:text-blue-300 p-2 hover:bg-blue-950 rounded-lg transition"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteMovie(${m.id}, '${m.title}')" class="text-red-400 hover:text-red-300 p-2 hover:bg-red-950 rounded-lg transition"><i class="fas fa-trash"></i></button>
+                    </div>
+                </td>
+            </tr>`).join('');
+        }
+
+        function filterTable() {
+            const q = document.getElementById('searchBox').value.toLowerCase();
+            const s = document.getElementById('statusFilter').value;
+            const filtered = allMovies.filter(m =>
+                (m.title?.toLowerCase().includes(q) || m.genre?.toLowerCase().includes(q)) &&
+                (!s || m.status === s)
+            );
+            renderTable(filtered);
+        }
+
+        function openModal(movie = null) {
+            editingId = movie ? movie.id : null;
+            document.getElementById('modalTitle').textContent = movie ? 'Edit Movie' : 'Add Movie';
+            document.getElementById('fTitle').value = movie?.title || '';
+            document.getElementById('fGenre').value = movie?.genre || 'Action';
+            document.getElementById('fLanguage').value = movie?.language || 'English';
+            document.getElementById('fDuration').value = movie?.durationMinutes || '';
+            document.getElementById('fRating').value = movie?.rating || '';
+            document.getElementById('fDirector').value = movie?.director || '';
+            document.getElementById('fCast').value = movie?.cast || '';
+            document.getElementById('fReleaseDate').value = movie?.releaseDate || '';
+            document.getElementById('fStatus').value = movie?.status || 'COMING_SOON';
+            document.getElementById('fPosterUrl').value = movie?.posterUrl || '';
+            document.getElementById('fDescription').value = movie?.description || '';
+            document.getElementById('movieModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('movieModal').classList.add('hidden');
+            editingId = null;
+        }
+
+        async function saveMovie() {
+            const data = {
+                title: document.getElementById('fTitle').value,
+                genre: document.getElementById('fGenre').value,
+                language: document.getElementById('fLanguage').value,
+                durationMinutes: parseInt(document.getElementById('fDuration').value) || null,
+                rating: parseFloat(document.getElementById('fRating').value) || 0,
+                director: document.getElementById('fDirector').value,
+                cast: document.getElementById('fCast').value,
+                releaseDate: document.getElementById('fReleaseDate').value || null,
+                status: document.getElementById('fStatus').value,
+                posterUrl: document.getElementById('fPosterUrl').value,
+                description: document.getElementById('fDescription').value,
+            };
+
+            if (!data.title) { alert('Title is required'); return; }
+
+            const result = editingId
+                ? await MovieAPI.update(editingId, data)
+                : await MovieAPI.create(data);
+
+            if (result) {
+                closeModal();
+                loadMovies();
+            } else {
+                alert('Failed to save movie. Make sure the Movie Service is running on port 8082.');
+            }
+        }
+
+        function editMovie(id) {
+            const movie = allMovies.find(m => m.id === id);
+            if (movie) openModal(movie);
+        }
+
+        async function deleteMovie(id, title) {
+            if (!confirm(`Delete "${title}"?`)) return;
+            await MovieAPI.delete(id);
+            loadMovies();
+        }
+
+        function doLogout() {
+            if (confirm('Logout?')) { Session.clearAdmin(); window.location.href = 'login.html'; }
+        }
+
+        loadMovies();
+    </script>
+</body>
+</html>

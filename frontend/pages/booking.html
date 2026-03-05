@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - CinemaBook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script>
+        tailwind.config = { theme: { extend: { colors: { primary: '#e50914' } } } }
+    </script>
+    <style>
+        body {
+            background-color: #0a0a0a;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #e50914, #ff6b6b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+
+<body class="text-white min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="bg-black bg-opacity-95 fixed w-full z-50 top-0 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-film text-red-600 text-2xl"></i>
+                <a href="../index.html" class="text-2xl font-bold gradient-text">CinemaBook</a>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="../index.html" class="text-gray-300 hover:text-white transition">Home</a>
+                <a href="movies.html" class="text-gray-300 hover:text-white transition">Movies</a>
+                <a href="theaters.html" class="text-gray-300 hover:text-white transition">Theaters</a>
+                <a href="booking.html" class="text-red-500 font-medium">My Bookings</a>
+            </div>
+            <a href="login.html"
+                class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition">Login</a>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="pt-20 pb-6 px-4 bg-gradient-to-b from-gray-900 to-transparent">
+        <div class="max-w-3xl mx-auto pt-8">
+            <h1 class="text-4xl font-black mb-2">My Bookings</h1>
+            <p class="text-gray-400">Track your ticket bookings</p>
+        </div>
+    </div>
+
+    <div class="max-w-3xl mx-auto px-4 pb-16">
+
+        <!-- Search by Ref or Email -->
+        <div class="bg-gray-900 rounded-2xl p-6 mb-8 border border-gray-800">
+            <h2 class="text-lg font-bold mb-4">Find Your Booking</h2>
+            <div class="flex gap-3">
+                <div class="flex-1 relative">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-500 text-sm"></i>
+                    <input id="searchInput" type="text" placeholder="Enter booking reference (e.g. BK1234567)"
+                        class="w-full bg-gray-800 text-white pl-9 pr-4 py-2.5 rounded-xl border border-gray-700 focus:outline-none focus:border-red-500 text-sm">
+                </div>
+                <button onclick="searchBooking()"
+                    class="bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition">
+                    Search
+                </button>
+            </div>
+            <p class="text-xs text-gray-600 mt-2">Or view recent bookings by scrolling below</p>
+        </div>
+
+        <!-- Search Result -->
+        <div id="searchResult" class="hidden mb-8"></div>
+
+        <!-- Recent Bookings -->
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-bold">Recent Bookings</h2>
+                <button onclick="loadAllBookings()" class="text-sm text-red-500 hover:text-red-400">Refresh</button>
+            </div>
+            <div id="loadingState" class="text-center py-10 text-gray-500">
+                <i class="fas fa-spinner fa-spin text-2xl mb-3 text-red-600"></i>
+                <p>Loading...</p>
+            </div>
+            <div id="emptyState" class="hidden text-center py-10 text-gray-500">
+                <i class="fas fa-ticket-alt text-4xl mb-3 opacity-20"></i>
+                <p>No bookings found</p>
+                <a href="movies.html" class="text-red-500 hover:text-red-400 text-sm mt-2 inline-block">Browse movies
+                    →</a>
+            </div>
+            <div id="bookingsList" class="space-y-4 hidden"></div>
+        </div>
+    </div>
+
+    <!-- Cancel functionality removed -->
+
+    <script src="../js/api.js"></script>
+    <script>
+        async function searchBooking() {
+            const ref = document.getElementById('searchInput').value.trim();
+            if (!ref) return;
+            const result = document.getElementById('searchResult');
+            result.innerHTML = '<p class="text-gray-500 text-sm text-center py-4"><i class="fas fa-spinner fa-spin mr-2"></i> Searching...</p>';
+            result.classList.remove('hidden');
+            const booking = await BookingAPI.getByRef(ref);
+            if (booking) {
+                result.innerHTML = `<h3 class="text-sm font-medium text-gray-400 mb-3">Search Result:</h3>` + renderBookingCard(booking);
+            } else {
+                result.innerHTML = `<div class="bg-gray-900 rounded-2xl p-5 border border-gray-700 text-center text-gray-500">
+                    <i class="fas fa-search text-2xl mb-2 opacity-30"></i>
+                    <p>No booking found with reference <strong>${ref}</strong></p>
+                </div>`;
+            }
+        }
+
+        document.getElementById('searchInput').addEventListener('keypress', e => {
+            if (e.key === 'Enter') searchBooking();
+        });
+
+        function renderBookingCard(b) {
+            const statusColors = {
+                'CONFIRMED': 'bg-green-900 text-green-400',
+                'CANCELLED': 'bg-red-900 text-red-400',
+                'PENDING': 'bg-yellow-900 text-yellow-400',
+            };
+            return `
+            <div class="bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden">
+                <div class="p-5">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span class="text-xs text-gray-500 font-mono">${b.bookingReference || '#' + b.id}</span>
+                            <h3 class="font-bold text-lg mt-0.5">${b.customerName || 'Customer'}</h3>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold ${statusColors[b.status] || 'bg-gray-700 text-gray-400'}">${b.status}</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 text-sm text-gray-400">
+                        <div><span class="text-gray-600 text-xs">Email</span><p class="text-white">${b.customerEmail || '—'}</p></div>
+                        <div><span class="text-gray-600 text-xs">Seats</span><p class="text-white">${b.numberOfSeats || 1}</p></div>
+                        <div><span class="text-gray-600 text-xs">Total</span><p class="text-green-400 font-bold">Rs. ${b.totalAmount || 0}</p></div>
+                        <div><span class="text-gray-600 text-xs">Booked On</span><p class="text-white">${b.createdAt ? new Date(b.createdAt).toLocaleDateString() : '—'}</p></div>
+                    </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        // Cancel feature is removed
+
+        async function loadAllBookings() {
+            document.getElementById('loadingState').classList.remove('hidden');
+            document.getElementById('bookingsList').classList.add('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+
+            const bookings = await BookingAPI.getAll();
+            document.getElementById('loadingState').classList.add('hidden');
+            if (!bookings || !bookings.length) {
+                document.getElementById('emptyState').classList.remove('hidden');
+                return;
+            }
+            const list = document.getElementById('bookingsList');
+            list.innerHTML = bookings.slice(0, 20).map(renderBookingCard).join('');
+            list.classList.remove('hidden');
+        }
+
+        loadAllBookings();
+    </script>
+</body>
+
+</html>

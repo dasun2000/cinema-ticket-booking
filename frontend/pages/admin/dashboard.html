@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - CinemaBook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            background: #0d0d0d;
+        }
+
+        .sidebar-link.active,
+        .sidebar-link:hover {
+            background: rgba(229, 9, 20, 0.15);
+            color: #ef4444;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #e50914, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+
+<body class="text-white min-h-screen flex">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-950 border-r border-gray-800 flex flex-col fixed h-full z-20">
+        <div class="p-5 border-b border-gray-800">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-film text-red-600 text-2xl"></i>
+                <div>
+                    <div class="font-black text-lg gradient-text">CinemaBook</div>
+                    <div class="text-xs text-gray-500">Admin Panel</div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+            <a href="dashboard.html"
+                class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl transition text-sm bg-red-900/20 text-red-500"><i
+                    class="fas fa-tachometer-alt w-5"></i> Dashboard</a>
+            <a href="movies.html"
+                class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
+                    class="fas fa-film w-5"></i> Movies</a>
+            <a href="theaters.html"
+                class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
+                    class="fas fa-building w-5"></i> Theaters</a>
+            <a href="showtimes.html"
+                class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
+                    class="fas fa-clock w-5"></i> Showtimes</a>
+            <a href="bookings.html"
+                class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
+                    class="fas fa-ticket-alt w-5"></i> Bookings</a>
+            <a href="seats.html"
+                class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
+                    class="fas fa-chair w-5"></i> Seats</a>
+            <a href="tickets.html"
+                class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
+                    class="fas fa-receipt w-5"></i> Tickets</a>
+            <a href="users.html"
+                class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
+                    class="fas fa-users w-5"></i> Users</a>
+            <a href="pricing.html"
+                class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
+                    class="fas fa-tags w-5"></i> Pricing</a>
+            <a href="promotions.html"
+                class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
+                    class="fas fa-gift w-5"></i> Promotions</a>
+            <a href="reports.html"
+                class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 transition text-sm"><i
+                    class="fas fa-chart-bar w-5"></i> Reports</a>
+        </nav>
+
+        <!-- Logout -->
+        <div class="p-4 border-t border-gray-800">
+            <div class="flex items-center gap-3 px-4 py-2 mb-2">
+                <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center text-xs font-bold"
+                    id="adminInitial">A</div>
+                <div>
+                    <div class="text-sm font-medium" id="adminName">Admin</div>
+                    <div class="text-xs text-gray-500" id="adminRole">SUPER_ADMIN</div>
+                </div>
+            </div>
+            <button onclick="doLogout()"
+                class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-red-400 hover:bg-red-950 transition text-sm">
+                <i class="fas fa-sign-out-alt w-5"></i> Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 flex-1 p-8">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-black">Dashboard</h1>
+                <p class="text-gray-500 mt-1">Welcome back! Here's what's happening today.</p>
+            </div>
+            <div class="text-gray-500 text-sm" id="dateDisplay"></div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-red-950 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-film text-red-500 text-xl"></i>
+                    </div>
+                    <span class="text-green-400 text-xs font-bold bg-green-950 px-2 py-1 rounded-full">+12%</span>
+                </div>
+                <div class="text-3xl font-black" id="statMovies">-</div>
+                <div class="text-gray-500 text-sm mt-1">Total Movies</div>
+            </div>
+
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-blue-950 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-ticket-alt text-blue-400 text-xl"></i>
+                    </div>
+                    <span class="text-green-400 text-xs font-bold bg-green-950 px-2 py-1 rounded-full">+8%</span>
+                </div>
+                <div class="text-3xl font-black" id="statBookings">-</div>
+                <div class="text-gray-500 text-sm mt-1">Total Bookings</div>
+            </div>
+
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-purple-950 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-users text-purple-400 text-xl"></i>
+                    </div>
+                    <span class="text-green-400 text-xs font-bold bg-green-950 px-2 py-1 rounded-full">+5%</span>
+                </div>
+                <div class="text-3xl font-black" id="statUsers">-</div>
+                <div class="text-gray-500 text-sm mt-1">Total Users</div>
+            </div>
+
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-green-950 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-building text-green-400 text-xl"></i>
+                    </div>
+                </div>
+                <div class="text-3xl font-black" id="statTheaters">-</div>
+                <div class="text-gray-500 text-sm mt-1">Theaters</div>
+            </div>
+        </div>
+
+        <!-- Service Status Grid -->
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 mb-8">
+            <h2 class="text-lg font-bold mb-6">Microservice Status</h2>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4" id="serviceStatus">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- Recent Bookings -->
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-lg font-bold">Recent Bookings</h2>
+                <a href="bookings.html" class="text-red-500 hover:text-red-400 text-sm">View All →</a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-gray-500 border-b border-gray-800">
+                            <th class="pb-3 text-left">Ref</th>
+                            <th class="pb-3 text-left">Customer</th>
+                            <th class="pb-3 text-left">Seats</th>
+                            <th class="pb-3 text-left">Amount</th>
+                            <th class="pb-3 text-left">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentBookings">
+                        <tr>
+                            <td colspan="5" class="py-8 text-center text-gray-600">Loading bookings...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/api.js"></script>
+    <script>
+        // Auth check
+        const admin = Session.getAdmin();
+        if (!admin) { window.location.href = 'login.html'; }
+        else {
+            document.getElementById('adminName').textContent = admin.fullName || 'Admin';
+            document.getElementById('adminRole').textContent = admin.role || 'ADMIN';
+            document.getElementById('adminInitial').textContent = (admin.fullName || 'A')[0].toUpperCase();
+        }
+
+        // Date
+        document.getElementById('dateDisplay').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+        // Service status
+        const services = [
+            { name: 'Users', port: 8081, path: '/api/users' },
+            { name: 'Movies', port: 8082, path: '/api/movies' },
+            { name: 'Theaters', port: 8083, path: '/api/theaters' },
+            { name: 'Showtimes', port: 8084, path: '/api/showtimes' },
+            { name: 'Bookings', port: 8085, path: '/api/bookings' },
+            { name: 'Seats', port: 8086, path: '/api/seats' },
+            { name: 'Promotions', port: 8087, path: '/api/promotions' },
+            { name: 'Admin', port: 8089, path: '/api/admin' },
+            { name: 'Reports', port: 8090, path: '/api/reports' },
+        ];
+
+        async function checkServiceStatus() {
+            const container = document.getElementById('serviceStatus');
+            container.innerHTML = services.map(s =>
+                `<div class="flex items-center gap-2 bg-gray-800 rounded-xl px-4 py-3">
+                    <div class="w-2 h-2 rounded-full bg-gray-600 animate-pulse" id="dot-${s.port}"></div>
+                    <span class="text-sm">${s.name}</span>
+                    <span class="text-xs text-gray-600 ml-auto" id="port-${s.port}">:${s.port}</span>
+                </div>`
+            ).join('');
+
+            for (const s of services) {
+                try {
+                    const r = await fetch(`http://localhost:${s.port}${s.path}`, { signal: AbortSignal.timeout(2000) });
+                    const dot = document.getElementById(`dot-${s.port}`);
+                    if (r.ok) { dot.className = 'w-2 h-2 rounded-full bg-green-500'; }
+                    else { dot.className = 'w-2 h-2 rounded-full bg-yellow-500'; }
+                } catch (e) {
+                    const dot = document.getElementById(`dot-${s.port}`);
+                    if (dot) dot.className = 'w-2 h-2 rounded-full bg-red-600';
+                }
+            }
+        }
+
+        async function loadStats() {
+            const [movies, bookings, users, theaters] = await Promise.all([
+                MovieAPI.getAll(),
+                BookingAPI.getAll(),
+                UserAPI.getAll(),
+                TheaterAPI.getAll(),
+            ]);
+            document.getElementById('statMovies').textContent = movies?.length ?? '—';
+            document.getElementById('statBookings').textContent = bookings?.length ?? '—';
+            document.getElementById('statUsers').textContent = users?.length ?? '—';
+            document.getElementById('statTheaters').textContent = theaters?.length ?? '—';
+
+            // Recent bookings
+            const tbody = document.getElementById('recentBookings');
+            if (bookings && bookings.length > 0) {
+                tbody.innerHTML = bookings.slice(0, 8).map(b => `
+                <tr class="border-b border-gray-800 hover:bg-gray-800 transition">
+                    <td class="py-3 text-blue-400 font-mono text-xs">${b.bookingReference || '#' + b.id}</td>
+                    <td class="py-3">${b.customerName || 'N/A'}</td>
+                    <td class="py-3">${b.numberOfSeats || '?'}</td>
+                    <td class="py-3 text-green-400 font-bold">Rs. ${b.totalAmount || '0'}</td>
+                    <td class="py-3">
+                        <span class="px-2 py-1 rounded-full text-xs font-bold ${b.status === 'CONFIRMED' ? 'bg-green-900 text-green-400' :
+                        b.status === 'CANCELLED' ? 'bg-red-900 text-red-400' :
+                            'bg-yellow-900 text-yellow-400'}">${b.status}</span>
+                    </td>
+                </tr>`).join('');
+            } else {
+                tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-gray-600">No bookings yet. Start the backend services.</td></tr>';
+            }
+        }
+
+        function doLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                AdminAPI.logout();
+                Session.clearAdmin();
+                window.location.href = 'login.html';
+            }
+        }
+
+        checkServiceStatus();
+        loadStats();
+    </script>
+</body>
+
+</html>
