@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin("*")
 @RestController
-@RequestMapping("/api/config")
+@RequestMapping("/api/tickets/config")
 public class TicketConfigController {
 
     @Autowired
