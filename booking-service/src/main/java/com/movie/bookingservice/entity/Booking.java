@@ -26,32 +26,115 @@ public class Booking {
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
-    public Long getShowtimeId() { return showtimeId; }
-    public void setShowtimeId(Long showtimeId) { this.showtimeId = showtimeId; }
-    public Long getMovieId() { return movieId; }
-    public void setMovieId(Long movieId) { this.movieId = movieId; }
-    public Long getTheaterId() { return theaterId; }
-    public void setTheaterId(Long theaterId) { this.theaterId = theaterId; }
-    public Integer getNumberOfSeats() { return numberOfSeats; }
-    public void setNumberOfSeats(Integer numberOfSeats) { this.numberOfSeats = numberOfSeats; }
-    public Double getTotalAmount() { return totalAmount; }
-    public void setTotalAmount(Double totalAmount) { this.totalAmount = totalAmount; }
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-    public String getBookingReference() { return bookingReference; }
-    public void setBookingReference(String bookingReference) { this.bookingReference = bookingReference; }
-    public String getCustomerName() { return customerName; }
-    public void setCustomerName(String customerName) { this.customerName = customerName; }
-    public String getCustomerEmail() { return customerEmail; }
-    public void setCustomerEmail(String customerEmail) { this.customerEmail = customerEmail; }
-    public String getCustomerPhone() { return customerPhone; }
-    public void setCustomerPhone(String customerPhone) { this.customerPhone = customerPhone; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getShowtimeId() {
+        return showtimeId;
+    }
+
+    public void setShowtimeId(Long showtimeId) {
+        this.showtimeId = showtimeId;
+    }
+
+    public Long getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(Long movieId) {
+        this.movieId = movieId;
+    }
+
+    public Long getTheaterId() {
+        return theaterId;
+    }
+
+    public void setTheaterId(Long theaterId) {
+        this.theaterId = theaterId;
+    }
+
+    public Integer getNumberOfSeats() {
+        return numberOfSeats;
+    }
+
+    public void setNumberOfSeats(Integer numberOfSeats) {
+        this.numberOfSeats = numberOfSeats;
+    }
+
+    public Double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(Double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getBookingReference() {
+        return bookingReference;
+    }
+
+    public void setBookingReference(String bookingReference) {
+        this.bookingReference = bookingReference;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
+
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
+    }
+
+    public String getCustomerPhone() {
+        return customerPhone;
+    }
+
+    public void setCustomerPhone(String customerPhone) {
+        this.customerPhone = customerPhone;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }
