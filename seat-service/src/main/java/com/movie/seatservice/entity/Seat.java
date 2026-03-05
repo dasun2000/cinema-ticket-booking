@@ -15,14 +15,28 @@ public class Seat {
     private String seatNumber;
     @Column(name = "seat_row")
     private String row;
-    private String seatType = "STANDARD"; // STANDARD, PREMIUM, VIP
-    private String status = "AVAILABLE"; // AVAILABLE, BOOKED, BLOCKED
+    private String seatType = "STANDARD";
+    private String status = "AVAILABLE";
     private Long bookingId;
     private Double price;
 
     @Column(updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
+
+    public Seat(Long id, Long showtimeId, Long theaterId, String seatNumber, String row, String seatType, String status, Long bookingId, Double price, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.showtimeId = showtimeId;
+        this.theaterId = theaterId;
+        this.seatNumber = seatNumber;
+        this.row = row;
+        this.seatType = seatType;
+        this.status = status;
+        this.bookingId = bookingId;
+        this.price = price;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 
     public Long getId() {
         return id;
@@ -110,5 +124,22 @@ public class Seat {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Seat{" +
+                "id=" + id +
+                ", showtimeId=" + showtimeId +
+                ", theaterId=" + theaterId +
+                ", seatNumber='" + seatNumber + '\'' +
+                ", row='" + row + '\'' +
+                ", seatType='" + seatType + '\'' +
+                ", status='" + status + '\'' +
+                ", bookingId=" + bookingId +
+                ", price=" + price +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }
