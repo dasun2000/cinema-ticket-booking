@@ -9,6 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body {
             font-family: 'Outfit', sans-serif;
@@ -24,7 +25,35 @@
     </style>
 </head>
 
-<body class="bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-950 min-h-screen text-white">
+<body class="bg-[#0a0a0a] min-h-screen text-white pt-20">
+
+    <!-- Navbar -->
+    <nav class="bg-black bg-opacity-90 fixed w-full z-50 top-0 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-film text-red-600 text-2xl"></i>
+                <span class="text-2xl font-bold"
+                    style="background: linear-gradient(to right, #e50914, #ff6b6b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">CinemaBook</span>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#" class="text-red-500 font-medium">Home</a>
+                <a href="#" class="text-gray-300 hover:text-white transition">Movies</a>
+                <a href="#" class="text-gray-300 hover:text-white transition">Theaters</a>
+                <a href="#" class="text-gray-300 hover:text-white transition">Offers</a>
+                <a href="#" class="text-gray-300 hover:text-white transition">My Bookings</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div
+                    class="hidden md:flex items-center space-x-2 bg-gray-800 px-3 py-2 rounded-lg cursor-pointer hover:bg-gray-700">
+                    <i class="fas fa-map-marker-alt text-red-500 text-sm"></i>
+                    <span class="text-sm text-gray-300">Colombo</span>
+                    <i class="fas fa-chevron-down text-gray-500 text-xs"></i>
+                </div>
+                <a href="#"
+                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition">Login</a>
+            </div>
+        </div>
+    </nav>
 
     <div class="container mx-auto px-4 py-12 max-w-4xl opacity-0 transition-opacity duration-1000 ease-in-out"
         id="main-container">
@@ -199,6 +228,45 @@
 
         window.onload = init;
     </script>
+
+    <!-- Footer -->
+    <footer class="bg-black border-t border-gray-800 py-12 px-4 mt-8">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center gap-2 mb-4">
+                    <i class="fas fa-film text-red-600 text-xl"></i>
+                    <span class="text-xl font-bold"
+                        style="background: linear-gradient(to right, #e50914, #ff6b6b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">CinemaBook</span>
+                </div>
+                <p class="text-gray-500 text-sm">Your ultimate movie booking platform in Sri Lanka.</p>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4 text-gray-300">Quick Links</h4>
+                <ul class="space-y-2 text-gray-500 text-sm">
+                    <li><a href="#" class="hover:text-white">Movies</a></li>
+                    <li><a href="#" class="hover:text-white">Theaters</a></li>
+                    <li><a href="#" class="hover:text-white">My Bookings</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4 text-gray-300">Cities</h4>
+                <ul class="space-y-2 text-gray-500 text-sm">
+                    <li>Colombo</li>
+                    <li>Kandy</li>
+                    <li>Galle</li>
+                    <li>Jaffna</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4 text-gray-300">Support</h4>
+                <a href="#" class="text-gray-500 hover:text-white text-sm">Help Center</a><br>
+                <a href="#" class="text-gray-500 hover:text-white text-sm">Contact Us</a>
+            </div>
+        </div>
+        <div class="text-center text-gray-600 text-sm mt-10 border-t border-gray-900 pt-6">
+            © 2025 CinemaBook. All rights reserved. | Movie Booking System - Microservices Architecture
+        </div>
+    </footer>
 </body>
 
 </html>
