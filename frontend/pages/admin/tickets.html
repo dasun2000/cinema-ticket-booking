@@ -266,11 +266,11 @@
         async function loadConfig() {
             try {
                 // Global Limit
-                const res = await apiFetch(`${API.TICKET_SERVICE}/api/config/settings`);
+                const res = await apiFetch(`${API.TICKET_SERVICE}/api/tickets/config/settings`);
                 if (res) document.getElementById('globalLimit').value = res.maxTicketLimit || 10;
 
                 // Icon Rules
-                const rulesRes = await apiFetch(`${API.TICKET_SERVICE}/api/config/options`);
+                const rulesRes = await apiFetch(`${API.TICKET_SERVICE}/api/tickets/config/options`);
                 renderIconRules(rulesRes || []);
             } catch (e) { console.error("Error loading config"); }
         }
@@ -297,7 +297,7 @@
         async function saveGlobalLimit() {
             const limit = parseInt(document.getElementById('globalLimit').value);
             if (!limit || limit < 1) return alert('Invalid Limit');
-            const res = await apiFetch(`${API.TICKET_SERVICE}/api/config/settings/limit`, {
+            const res = await apiFetch(`${API.TICKET_SERVICE}/api/tickets/config/settings/limit`, {
                 method: 'PUT',
                 body: JSON.stringify({ maxTicketLimit: limit })
             });
@@ -316,7 +316,7 @@
             const url = document.getElementById('ruleIcon').value;
             if (!count || !url) return alert('Fill all fields');
 
-            const res = await apiFetch(`${API.TICKET_SERVICE}/api/config/options`, {
+            const res = await apiFetch(`${API.TICKET_SERVICE}/api/tickets/config/options`, {
                 method: 'POST',
                 body: JSON.stringify({ ticketCount: count, iconUrl: url })
             });
@@ -328,7 +328,7 @@
 
         async function deleteIconRule(id) {
             if (!confirm('Delete this rule?')) return;
-            await apiFetch(`${API.TICKET_SERVICE}/api/config/options/${id}`, { method: 'DELETE' });
+            await apiFetch(`${API.TICKET_SERVICE}/api/tickets/config/options/${id}`, { method: 'DELETE' });
             loadConfig();
         }
 

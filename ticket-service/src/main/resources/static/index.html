@@ -126,7 +126,7 @@
         async function init() {
             try {
                 // Fetch Settings (max limit)
-                const settingsRes = await fetch('/api/config/settings');
+                const settingsRes = await fetch('/api/tickets/config/settings');
                 if (settingsRes.ok) {
                     const settings = await settingsRes.json();
                     maxLimit = settings.maxTicketLimit || 10;
@@ -134,7 +134,7 @@
                 }
 
                 // Fetch Options (Icons)
-                const optionsRes = await fetch('/api/config/options');
+                const optionsRes = await fetch('/api/tickets/config/options');
                 if (optionsRes.ok) {
                     iconRules = await optionsRes.json();
                     iconRules.sort((a, b) => a.ticketCount - b.ticketCount);
@@ -203,10 +203,21 @@
             }
         }
 
-        function proceedToCheckout() {
+        async function proceedToCheckout() {
             if (globalSelectedCount === 0) {
                 alert("Please select at least 1 ticket.");
                 return;
+            }
+
+            try {
+                // Save selection to database first seamlessly
+                await fetch('/api/tickets/selection', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ticketCount: globalSelectedCount })
+                });
+            } catch (err) {
+                console.warn("Could not save to DB right now", err);
             }
 
             // Extract existing query parameters (like showtimeId, hallId, etc.) to pass them along

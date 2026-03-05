@@ -11,7 +11,7 @@ const API = {
     ADMIN_SERVICE: GATEWAY_URL,
     REPORT_SERVICE: GATEWAY_URL,
     PRICING_SERVICE: GATEWAY_URL,
-    TICKET_SERVICE: GATEWAY_URL,
+    TICKET_SERVICE: 'http://localhost:8092', // Direct port for ticket service testing
     PROMOTION_SERVICE: GATEWAY_URL,
 };
 
